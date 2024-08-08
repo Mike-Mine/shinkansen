@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChatMessageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,5 +23,8 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::put('/chat/{chatMessage}', [ChatMessageController::class, 'update'])->name('chat.update');
     Route::delete('/chat/{chatMessage}', [ChatMessageController::class, 'destroy'])->name('chat.destroy');
 });
+
+Route::resource('tasks', TaskController::class)
+    ->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';
