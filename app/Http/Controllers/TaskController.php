@@ -93,6 +93,13 @@ class TaskController extends Controller
         return redirect(route('tasks.index'));
     }
 
+    /**
+     * Updates the status of a task.
+     *
+     * @param Request $request The HTTP request containing the new status.
+     * @param Task $task The task to update.
+     * @return RedirectResponse A redirect response to the task's show page.
+     */
     public function updateStatus(Request $request, Task $task): RedirectResponse
     {
         $validated = $request->validate([
