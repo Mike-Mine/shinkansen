@@ -27,4 +27,8 @@ Route::middleware('auth', 'verified')->group(function () {
 Route::resource('tasks', TaskController::class)
     ->middleware(['auth', 'verified']);
 
+Route::patch('tasks/{task}/update-status', [TaskController::class, 'updateStatus'])
+    ->name('tasks.update-status')
+    ->middleware(['auth', 'verified']);
+
 require __DIR__.'/auth.php';

@@ -1,9 +1,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
-import { useTaskStatus } from '@/src/utils/taskStatus';
 import dayjs from 'dayjs';
+import { formatStatus, getStatusClass } from '@/src/utils/taskStatus';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(relativeTime);
@@ -13,9 +15,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  availableStatuses: {
+    type: Object,
+  }
 });
-
-const { formattedStatus, statusClass } = useTaskStatus(props.task);
 </script>
 
 <template>
@@ -36,7 +39,7 @@ const { formattedStatus, statusClass } = useTaskStatus(props.task);
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ task.title }}</h2>
                 </div>
 
-                <Link :href="route('tasks.destroy', task.id)" class="text-red-600 hover:text-red-900 px-4 py-2" method="delete">
+                <Link :href="route('tasks.destroy', task.id)" class="text-red-600 hover:text-red-900 px-4 py-2" method="delete" as="button">
                     Delete
                 </Link>
             </div>
@@ -53,9 +56,48 @@ const { formattedStatus, statusClass } = useTaskStatus(props.task);
                                         Status
                                     </dt>
                                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        <span :class="[statusClass, 'px-2 py-1 text-xs font-medium rounded-full']">
-                                            {{ formattedStatus }}
-                                        </span>
+                                        <div class="ms-3 relative">
+                                            <Dropdown
+                                                align="center"
+                                                width="48"
+                                            >
+                                                <template #trigger>
+                                                    <span class="inline-flex rounded-md">
+                                                        <button
+                                                            type="button"
+                                                            :class="[getStatusClass(task.status), 'inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-gray-700 focus:outline-none transition ease-in-out duration-150']"
+                                                        >
+                                                            {{ formatStatus(task.status) }}
+
+                                                            <svg
+                                                                class="ms-2 -me-0.5 h-4 w-4"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 20 20"
+                                                                fill="currentColor"
+                                                            >
+                                                                <path
+                                                                    fill-rule="evenodd"
+                                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                    clip-rule="evenodd"
+                                                                />
+                                                            </svg>
+                                                        </button>
+                                                    </span>
+                                                </template>
+                                                <template #content>
+                                                    <DropdownLink
+                                                        v-for="status in availableStatuses"
+                                                        :key="status"
+                                                        :href="route('tasks.update-status', task.id)"
+                                                        method="patch"
+                                                        as="button"
+                                                        :data="{ status: status }"
+                                                    >
+                                                        {{ formatStatus(status) }}
+                                                    </DropdownLink>
+                                                </template>
+                                            </Dropdown>
+                                        </div>
                                     </dd>
                                 </div>
                                 <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

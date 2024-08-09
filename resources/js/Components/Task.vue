@@ -8,7 +8,7 @@ dayjs.extend(relativeTime);
 
 const props = defineProps(['task']);
 
-const { formattedStatus, statusClass } = useTaskStatus(props.task);
+const { formattedStatus, statusClass } = useTaskStatus(props.task.status);
 
 </script>
 

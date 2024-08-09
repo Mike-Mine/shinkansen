@@ -1,8 +1,8 @@
 import { computed } from 'vue';
 
-export function useTaskStatus(taskRef) {
-    const formattedStatus = computed(() => formatStatus(taskRef.status));
-    const statusClass = computed(() => getStatusClass(taskRef.status));
+export function useTaskStatus(status) {
+    const formattedStatus = computed(() => formatStatus(status));
+    const statusClass = computed(() => getStatusClass(status));
 
     return {
         formattedStatus,
@@ -10,13 +10,13 @@ export function useTaskStatus(taskRef) {
     };
 }
 
-const formatStatus = (status) => {
+export const formatStatus = (status) => {
     return status
         .split('_')
         .map(word => word[0].toUpperCase() + word.slice(1))
         .join(' ');
 };
 
-const getStatusClass = (status) => {
+export const getStatusClass = (status) => {
     return `status-${status.replace(/_/g, '-')}`;
 };

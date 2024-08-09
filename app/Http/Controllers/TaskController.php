@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -56,6 +57,11 @@ class TaskController extends Controller
     {
         return Inertia::render('Tasks/Show', [
             'task' => $task->load('reporter:id,name', 'assignee:id,name'),
+            'users' => User::all(),
+            'availableStatuses' => collect(TaskStatus::cases())
+                ->filter(function ($status) use($task) {
+                    return $status->value !== $task->status->value;
+                }),
         ]);
     }
 
@@ -85,5 +91,16 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect(route('tasks.index'));
+    }
+
+    public function updateStatus(Request $request, Task $task): RedirectResponse
+    {
+        $validated = $request->validate([
+            'status' => 'required',
+        ]);
+
+        $task->update($validated);
+
+        return redirect(route('tasks.show', $task));
     }
 }
