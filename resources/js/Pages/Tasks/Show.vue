@@ -1,5 +1,8 @@
 <script setup>
+import { ref, watch } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import { Head } from '@inertiajs/vue3';
@@ -17,7 +20,21 @@ const props = defineProps({
   },
   availableStatuses: {
     type: Object,
-  }
+  },
+  users: {
+    type: Object,
+  },
+});
+
+const task = ref(props.task);
+
+watch(() => task.value.assignee_id, (newAssigneeId) => {
+  useForm({
+    assignee_id: newAssigneeId,
+  }).patch(route('tasks.update-assignee', task.value.id), {
+    preserveState: true,
+    preserveScroll: true,
+  });
 });
 </script>
 
@@ -106,6 +123,16 @@ const props = defineProps({
                                     </dt>
                                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                         {{ task.description }}
+                                    </dd>
+                                </div>
+                                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt class="text-sm font-medium text-gray-500">
+                                        Assignee
+                                    </dt>
+                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 w-48">
+                                        <div class="ms-3 relative">
+                                            <AssigneeSelector :users="users" v-model="task.assignee_id" />
+                                        </div>
                                     </dd>
                                 </div>
                                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

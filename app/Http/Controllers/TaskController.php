@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -57,11 +58,11 @@ class TaskController extends Controller
     {
         return Inertia::render('Tasks/Show', [
             'task' => $task->load('reporter:id,name', 'assignee:id,name'),
-            'users' => User::all(),
             'availableStatuses' => collect(TaskStatus::cases())
                 ->filter(function ($status) use($task) {
                     return $status->value !== $task->status->value;
                 }),
+            'users' => User::select('id', 'name')->get()
         ]);
     }
 
@@ -109,5 +110,21 @@ class TaskController extends Controller
         $task->update($validated);
 
         return redirect(route('tasks.show', $task));
+    }
+
+    public function updateAssignee(Request $request, Task $task): RedirectResponse
+    {
+        $validated = $request->validate([
+            'assignee_id' => [
+                'nullable',
+                Rule::exists('users', 'id')->whereNull('deleted_at')->where(function ($query) {
+                    $query->whereNotNull('id');
+                }),
+            ],
+        ]);
+
+        $task->update($validated);
+
+        return back()->with('success', 'Assignee updated successfully');
     }
 }
