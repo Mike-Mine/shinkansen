@@ -3,13 +3,11 @@ import { ref, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import dayjs from 'dayjs';
-import { formatStatus, getStatusClass } from '@/src/utils/taskStatus';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import StatusSelector from '@/Components/Tasks/StatusSelector.vue';
 
 dayjs.extend(relativeTime);
 
@@ -18,7 +16,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  availableStatuses: {
+  statuses: {
     type: Object,
   },
   users: {
@@ -32,6 +30,15 @@ watch(() => task.value.assignee_id, (newAssigneeId) => {
   useForm({
     assignee_id: newAssigneeId,
   }).patch(route('tasks.update-assignee', task.value.id), {
+    preserveState: true,
+    preserveScroll: true,
+  });
+});
+
+watch(() => task.value.status, (newStatus) => {
+  useForm({
+    status: newStatus,
+  }).patch(route('tasks.update-status', task.value.id), {
     preserveState: true,
     preserveScroll: true,
   });
@@ -74,46 +81,7 @@ watch(() => task.value.assignee_id, (newAssigneeId) => {
                                     </dt>
                                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                         <div class="ms-3 relative">
-                                            <Dropdown
-                                                align="center"
-                                                width="48"
-                                            >
-                                                <template #trigger>
-                                                    <span class="inline-flex rounded-md">
-                                                        <button
-                                                            type="button"
-                                                            :class="[getStatusClass(task.status), 'inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md hover:text-gray-700 focus:outline-none transition ease-in-out duration-150']"
-                                                        >
-                                                            {{ formatStatus(task.status) }}
-
-                                                            <svg
-                                                                class="ms-2 -me-0.5 h-4 w-4"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 20 20"
-                                                                fill="currentColor"
-                                                            >
-                                                                <path
-                                                                    fill-rule="evenodd"
-                                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                                    clip-rule="evenodd"
-                                                                />
-                                                            </svg>
-                                                        </button>
-                                                    </span>
-                                                </template>
-                                                <template #content>
-                                                    <DropdownLink
-                                                        v-for="status in availableStatuses"
-                                                        :key="status"
-                                                        :href="route('tasks.update-status', task.id)"
-                                                        method="patch"
-                                                        as="button"
-                                                        :data="{ status: status }"
-                                                    >
-                                                        {{ formatStatus(status) }}
-                                                    </DropdownLink>
-                                                </template>
-                                            </Dropdown>
+                                            <StatusSelector :statuses="statuses" v-model="task.status" />
                                         </div>
                                     </dd>
                                 </div>

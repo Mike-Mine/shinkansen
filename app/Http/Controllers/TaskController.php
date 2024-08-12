@@ -62,10 +62,7 @@ class TaskController extends Controller
     {
         return Inertia::render('Tasks/Show', [
             'task' => $task->load('reporter:id,name', 'assignee:id,name'),
-            'availableStatuses' => collect(TaskStatus::cases())
-                ->filter(function ($status) use($task) {
-                    return $status->value !== $task->status->value;
-                }),
+            'statuses' => TaskStatus::cases(),
             'users' => User::select('id', 'name')->get()
         ]);
     }
@@ -116,6 +113,13 @@ class TaskController extends Controller
         return back()->with('success', 'Status updated successfully');
     }
 
+    /**
+     * Updates the assignee of a task.
+     *
+     * @param Request $request The HTTP request containing the new assignee ID.
+     * @param Task $task The task to update.
+     * @return RedirectResponse A redirect response to the task's show page with a success message.
+     */
     public function updateAssignee(Request $request, Task $task): RedirectResponse
     {
         $validated = $request->validate([
