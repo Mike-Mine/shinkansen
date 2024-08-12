@@ -25,10 +25,20 @@ defineProps(['tasks']);
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <Task
-                    v-for="task in tasks"
+                    v-for="task in tasks.data"
                     :key="task.id"
                     :task="task"
                 />
+                <div class="mt-4">
+                    <Link
+                        v-for="link in tasks.links"
+                        :key="link.url"
+                        :href="link.url"
+                        v-html="link.label"
+                        class="px-2"
+                        :class="{ 'text-zinc-400': !link.url, 'text-indigo-500': link.active }"
+                    />
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>

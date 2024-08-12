@@ -19,8 +19,12 @@ class TaskController extends Controller
      */
     public function index(): Response
     {
+        $tasks = Task::with('reporter:id,name', 'assignee:id,name')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
         return Inertia::render('Tasks/Index', [
-            'tasks' => Task::with('reporter:id,name', 'assignee:id,name')->latest()->get(),
+            'tasks' => $tasks
         ]);
     }
 
@@ -109,7 +113,7 @@ class TaskController extends Controller
 
         $task->update($validated);
 
-        return redirect(route('tasks.show', $task));
+        return back()->with('success', 'Status updated successfully');
     }
 
     public function updateAssignee(Request $request, Task $task): RedirectResponse
