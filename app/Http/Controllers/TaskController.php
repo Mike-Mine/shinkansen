@@ -78,9 +78,20 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(Request $request, Task $task): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'status' => 'sometimes|required',
+            'assignee_id' => [
+                'sometimes',
+                'nullable',
+                'exists:users,id,deleted_at,NULL',
+            ],
+        ]);
+
+        $task->update($validated);
+
+        return back()->with('success', 'Task updated successfully');
     }
 
     /**
@@ -93,46 +104,5 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect(route('tasks.index'));
-    }
-
-    /**
-     * Updates the status of a task.
-     *
-     * @param Request $request The HTTP request containing the new status.
-     * @param Task $task The task to update.
-     * @return RedirectResponse A redirect response to the task's show page.
-     */
-    public function updateStatus(Request $request, Task $task): RedirectResponse
-    {
-        $validated = $request->validate([
-            'status' => 'required',
-        ]);
-
-        $task->update($validated);
-
-        return back()->with('success', 'Status updated successfully');
-    }
-
-    /**
-     * Updates the assignee of a task.
-     *
-     * @param Request $request The HTTP request containing the new assignee ID.
-     * @param Task $task The task to update.
-     * @return RedirectResponse A redirect response to the task's show page with a success message.
-     */
-    public function updateAssignee(Request $request, Task $task): RedirectResponse
-    {
-        $validated = $request->validate([
-            'assignee_id' => [
-                'nullable',
-                Rule::exists('users', 'id')->whereNull('deleted_at')->where(function ($query) {
-                    $query->whereNotNull('id');
-                }),
-            ],
-        ]);
-
-        $task->update($validated);
-
-        return back()->with('success', 'Assignee updated successfully');
     }
 }

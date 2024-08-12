@@ -12,37 +12,29 @@ import StatusSelector from '@/Components/Tasks/StatusSelector.vue';
 dayjs.extend(relativeTime);
 
 const props = defineProps({
-  task: {
-    type: Object,
-    required: true,
-  },
-  statuses: {
-    type: Object,
-  },
-  users: {
-    type: Object,
-  },
+    task: {
+        type: Object,
+        required: true,
+    },
+    statuses: {
+        type: Object,
+    },
+    users: {
+        type: Object,
+    },
 });
 
 const task = ref(props.task);
 
-watch(() => task.value.assignee_id, (newAssigneeId) => {
-  useForm({
-    assignee_id: newAssigneeId,
-  }).patch(route('tasks.update-assignee', task.value.id), {
-    preserveState: true,
-    preserveScroll: true,
-  });
-});
-
-watch(() => task.value.status, (newStatus) => {
-  useForm({
-    status: newStatus,
-  }).patch(route('tasks.update-status', task.value.id), {
-    preserveState: true,
-    preserveScroll: true,
-  });
-});
+watch(() => [task.value.status, task.value.assignee_id], ([newStatus, newAssigneeId]) => {
+    useForm({
+        status: newStatus,
+        assignee_id: newAssigneeId,
+    }).patch(route('tasks.update', task.value.id), {
+        preserveState: true,
+        preserveScroll: true,
+    });
+}, { deep: true });
 </script>
 
 <template>
