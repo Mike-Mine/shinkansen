@@ -42,24 +42,7 @@ watch(() => [task.value.status, task.value.assignee_id], ([newStatus, newAssigne
     <Head title="Task Details" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex items-center space-x-4 justify-between">
-                <div class="flex items-center space-x-4">
-                    <Link
-                        :href="route('tasks.index')"
-                        class="text-gray-600 hover:text-gray-900"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </Link>
-                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Task Details</h2>
-                </div>
-
-            </div>
-        </template>
-
-        <div class="py-12">
+        <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">

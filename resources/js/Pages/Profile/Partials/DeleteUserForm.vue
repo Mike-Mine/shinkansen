@@ -38,7 +38,7 @@ const closeModal = () => {
 </script>
 
 <template>
-    <section class="space-y-6">
+    <section class="space-y-4">
         <header>
             <h2 class="text-lg font-medium text-gray-900">Delete Account</h2>
 
