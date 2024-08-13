@@ -66,7 +66,7 @@ watch(selectedStatus, (newValue) => {
                         as="template"
                     >
                         <li
-                            class="relative text-gray-900 cursor-default select-none py-2 px-4"
+                            class="relative text-gray-900 cursor-default select-none py-2 px-4 hover:bg-gray-100"
                             :hidden="selected"
                         >
                             <span>

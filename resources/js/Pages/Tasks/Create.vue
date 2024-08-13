@@ -5,12 +5,14 @@ import { Link } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 
+import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
+
 defineProps(['users']);
 
 const form = useForm({
     title: '',
     description: '',
-    assignee: '',
+    assignee_id: '',
 });
 </script>
 
@@ -65,16 +67,11 @@ const form = useForm({
                             <label for="assignee" class="block font-medium text-sm text-gray-700">
                                 Assignee
                             </label>
-                            <select
-                                id="assignee"
-                                v-model="form.assignee"
-                                class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            >
-                                <option value="">Undefined</option>
-                                <option v-for="user in users" :key="user.id" :value="user.id">
-                                    {{ user.name }}
-                                </option>
-                            </select>
+                            <AssigneeSelector
+                                :users="users"
+                                v-model="form.assignee_id"
+                            />
+                            <InputError :message="form.errors.assignee_id" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">

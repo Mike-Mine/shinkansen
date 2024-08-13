@@ -2,11 +2,12 @@
 import { ref, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
+import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
 import StatusSelector from '@/Components/Tasks/StatusSelector.vue';
 
 dayjs.extend(relativeTime);
