@@ -38,7 +38,7 @@ watch(() => [task.value.status, task.value.assignee_id], ([newStatus, newAssigne
 </script>
 
 <template>
-    <Head title="Tasks" />
+    <Head title="Task Details" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -52,74 +52,59 @@ watch(() => [task.value.status, task.value.assignee_id], ([newStatus, newAssigne
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </Link>
-                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ task.title }}</h2>
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Task Details</h2>
                 </div>
 
-                <Link :href="route('tasks.destroy', task.id)" class="text-red-600 hover:text-red-900 px-4 py-2" method="delete" as="button">
-                    Delete
-                </Link>
             </div>
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <div class="flex items-start space-x-4">
-                        <div class="border-t border-gray-200">
-                            <dl>
-                                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">
-                                        Status
-                                    </dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        <div class="ms-3 relative">
-                                            <StatusSelector :statuses="statuses" v-model="task.status" />
-                                        </div>
-                                    </dd>
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-white border-b border-gray-200">
+                        <div class="flex flex-col md:flex-row">
+                            <div class="w-full md:w-2/3 pr-0 md:pr-4">
+                                <h1 class="text-2xl font-bold mb-4">{{ task.title }}</h1>
+                                <hr class="my-4">
+                                <div class="mt-4">
+                                    <h2 class="text-lg font-semibold mb-2">Description</h2>
+                                    <p>{{ task.description }}</p>
                                 </div>
-                                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">
-                                        Description
-                                    </dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        {{ task.description }}
-                                    </dd>
+                            </div>
+                            <div class="w-full md:w-1/3 mt-4 md:mt-0 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-gray-200">
+                                <div class="mb-4">
+                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Status</h3>
+                                    <StatusSelector
+                                        v-model="task.status"
+                                        :statuses="statuses"
+                                    />
                                 </div>
-                                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">
-                                        Assignee
-                                    </dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 w-48">
-                                        <div class="ms-3 relative">
-                                            <AssigneeSelector :users="users" v-model="task.assignee_id" />
-                                        </div>
-                                    </dd>
+                                <div class="mb-4">
+                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Assignee</h3>
+                                    <AssigneeSelector
+                                        :users="users"
+                                        v-model="task.assignee_id"
+                                    />
                                 </div>
-                                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">
-                                        Reporter
-                                    </dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        {{ task.reporter.name }}
-                                    </dd>
+                                <div class="mb-4">
+                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Reporter</h3>
+                                    <p>{{ task.reporter.name }}</p>
                                 </div>
-                                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">
-                                        Created At
-                                    </dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        {{ dayjs(task.created_at).format('DD/MMM/YYYY HH:mm') }}
-                                    </dd>
+                                <div class="mt-6">
+                                    <p class="text-xs text-gray-500">Created: {{ dayjs(task.created_at).format('DD/MMM/YYYY HH:mm') }}</p>
+                                    <p class="text-xs text-gray-500">Updated: {{ dayjs(task.updated_at).format('DD/MMM/YYYY HH:mm') }}</p>
                                 </div>
-                                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt class="text-sm font-medium text-gray-500">
-                                        Updated At
-                                    </dt>
-                                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                        {{ dayjs(task.updated_at).format('DD/MMM/YYYY HH:mm') }}
-                                    </dd>
+                                <div class="mt-4 text-right">
+                                    <Link
+                                        :href="route('tasks.destroy', task.id)"
+                                        class="text-red-600 text-sm hover:text-red-900"
+                                        method="delete"
+                                        as="button"
+                                    >
+                                        Delete Task
+                                    </Link>
                                 </div>
-                            </dl>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -70,8 +70,13 @@ const selectedUser = computed(() =>
                         Nothing found.
                     </div>
 
-                    <ComboboxOption v-for="user in filteredUsers" as="template" :key="user.id" :value="user.id"
-                        v-slot="{ active, selected }">
+                    <ComboboxOption
+                        v-for="user in filteredUsers"
+                        as="template"
+                        :key="user.id"
+                        :value="user.id"
+                        v-slot="{ active, selected }"
+                    >
                         <li class="relative cursor-default select-none py-2 pl-10 pr-4" :class="{
                             'bg-teal-600 text-white': active,
                             'text-gray-900': !active,
@@ -79,8 +84,11 @@ const selectedUser = computed(() =>
                             <span class="block truncate" :class="{ 'font-medium': selected, 'font-normal': !selected }">
                                 {{ user.name }}
                             </span>
-                            <span v-if="selected" class="absolute inset-y-0 left-0 flex items-center pl-3"
-                                :class="{ 'text-white': active, 'text-teal-600': !active }">
+                            <span
+                                v-if="selected"
+                                class="absolute inset-y-0 left-0 flex items-center pl-3"
+                                :class="{ 'text-white': active, 'text-teal-600': !active }"
+                            >
                                 <CheckIcon class="h-5 w-5" aria-hidden="true" />
                             </span>
                         </li>
