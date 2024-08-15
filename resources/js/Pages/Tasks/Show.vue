@@ -9,6 +9,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
 import StatusSelector from '@/Components/Tasks/StatusSelector.vue';
+import EditableTitle from '@/Components/Tasks/EditableTitle.vue';
+import EditableDescription from '@/Components/Tasks/EditableDescription.vue';
 
 dayjs.extend(relativeTime);
 
@@ -27,7 +29,16 @@ const props = defineProps({
 
 const task = ref(props.task);
 
-watch(() => [task.value.status, task.value.assignee_id], ([newStatus, newAssigneeId]) => {
+const updateTask = (updatedData) => {
+    task.value = { ...task.value, ...updatedData };
+};
+
+watch(() => [
+    task.value.status,
+    task.value.assignee_id,
+    task.value.title,
+    task.value.description
+], ([newStatus, newAssigneeId]) => {
     useForm({
         status: newStatus,
         assignee_id: newAssigneeId,
@@ -48,12 +59,11 @@ watch(() => [task.value.status, task.value.assignee_id], ([newStatus, newAssigne
                     <div class="p-6 bg-white border-b border-gray-200">
                         <div class="flex flex-col md:flex-row">
                             <div class="w-full md:w-2/3 pr-0 md:pr-4">
-                                <h1 class="text-2xl font-bold mb-4">{{ task.title }}</h1>
+                                <EditableTitle :task="task" @update="updateTask" />
+
                                 <hr class="my-4">
-                                <div class="mt-4">
-                                    <h2 class="text-lg font-semibold mb-2">Description</h2>
-                                    <p>{{ task.description }}</p>
-                                </div>
+
+                                <EditableDescription :task="task" @update="updateTask" />
                             </div>
                             <div class="w-full md:w-1/3 mt-4 md:mt-0 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-gray-200">
                                 <div class="mb-4">

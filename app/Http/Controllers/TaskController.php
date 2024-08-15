@@ -87,6 +87,8 @@ class TaskController extends Controller
                 'nullable',
                 'exists:users,id,deleted_at,NULL',
             ],
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string|max:255',
         ]);
 
         $task->update($validated);
