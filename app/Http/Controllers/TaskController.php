@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -62,17 +61,10 @@ class TaskController extends Controller
     {
         return Inertia::render('Tasks/Show', [
             'task' => $task->load('reporter:id,name', 'assignee:id,name'),
+            'comments' => $task->comments()->with('user:id,name')->orderBy('created_at', 'desc')->get(),
             'statuses' => TaskStatus::cases(),
             'users' => User::select('id', 'name')->get()
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Task $task)
-    {
-        //
     }
 
     /**
@@ -80,6 +72,8 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task): RedirectResponse
     {
+        Gate::authorize('update', $task);
+
         $validated = $request->validate([
             'status' => 'sometimes|required',
             'assignee_id' => [

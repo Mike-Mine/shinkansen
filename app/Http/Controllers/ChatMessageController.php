@@ -44,22 +44,6 @@ class ChatMessageController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(ChatMessage $chatMessage)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ChatMessage $chatMessage)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, ChatMessage $chatMessage): RedirectResponse

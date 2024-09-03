@@ -11,6 +11,7 @@ import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
 import StatusSelector from '@/Components/Tasks/StatusSelector.vue';
 import EditableTitle from '@/Components/Tasks/EditableTitle.vue';
 import EditableDescription from '@/Components/Tasks/EditableDescription.vue';
+import CommentsList from '@/Components/Comments/List.vue';
 
 dayjs.extend(relativeTime);
 
@@ -19,6 +20,9 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    comments: {
+        type: Object,
+    },
     statuses: {
         type: Object,
     },
@@ -26,6 +30,8 @@ const props = defineProps({
         type: Object,
     },
 });
+
+console.log(props.comments);
 
 const task = ref(props.task);
 
@@ -55,7 +61,7 @@ watch(() => [
     <AuthenticatedLayout>
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
                         <div class="flex flex-col md:flex-row">
                             <div class="w-full md:w-2/3 pr-0 md:pr-4">
@@ -99,6 +105,9 @@ watch(() => [
                                     </Link>
                                 </div>
                             </div>
+                        </div>
+                        <div class="mt-4 border-t">
+                            <CommentsList :task="task" :comments="comments"/>
                         </div>
                     </div>
                 </div>
