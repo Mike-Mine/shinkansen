@@ -33,6 +33,11 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'can' => auth()->check()
+                    ? $request->user()->getAllPermissions()->mapWithKeys(function ($value, $key) {
+                        return [$value->name => true];
+                    })->all()
+                    : [],
             ],
         ];
     }
