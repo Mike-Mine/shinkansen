@@ -42,6 +42,9 @@ const showingNavigationDropdown = ref(false);
                                     <NavLink :href="route('chat.index')" :active="route().current('chat.index')">
                                         Chat
                                     </NavLink>
+                                    <NavLink v-if="$page.props.auth.can['view users']" :href="route('users.index')" :active="route().current('users.*')">
+                                        Users
+                                    </NavLink>
                                 </div>
                             </div>
 

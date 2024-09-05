@@ -4,6 +4,7 @@ use App\Http\Controllers\ChatMessageController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -29,6 +30,9 @@ Route::resource('tasks', TaskController::class)
 
 Route::resource('comments', CommentController::class)
     ->only('store', 'update', 'destroy')
+    ->middleware(['auth', 'verified']);
+
+Route::resource('users', UserController::class)
     ->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';
