@@ -15,7 +15,7 @@ defineProps({
 
 </script>
 <template>
-    <Head title="Tasks" />
+    <Head title="Users" />
 
     <AuthenticatedLayout>
         <div class="py-8">
