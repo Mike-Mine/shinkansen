@@ -31,7 +31,7 @@ defineProps({
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users" :key="user.id" class="border-b border-gray-200 hover:bg-gray-100">
+                        <tr v-for="user in users.data" :key="user.id" class="border-b border-gray-200 hover:bg-gray-100">
                             <td class="px-4 py-3">
                                 <img
                                     :src="user.avatar
@@ -50,6 +50,16 @@ defineProps({
                         </tr>
                     </tbody>
                     </table>
+                </div>
+                <div class="mt-4">
+                    <Link
+                        v-for="link in users.links"
+                        :key="link.url"
+                        :href="link.url"
+                        v-html="link.label"
+                        class="px-2"
+                        :class="{ 'text-zinc-400': !link.url, 'text-indigo-500': link.active }"
+                    />
                 </div>
             </div>
         </div>
