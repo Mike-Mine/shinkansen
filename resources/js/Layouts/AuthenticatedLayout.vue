@@ -56,8 +56,16 @@ const showingNavigationDropdown = ref(false);
                                             <span class="inline-flex rounded-md">
                                                 <button
                                                     type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                    class="inline-flex gap-2 items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                                 >
+                                                    <img
+                                                        :src="$page.props.auth.user.avatar
+                                                            ? `/storage/${$page.props.auth.user.avatar}`
+                                                            : '/storage/avatars/default_profile_image.jpg'
+                                                        "
+                                                        alt="avatar"
+                                                        class="w-8 h-8 rounded-full overflow-hidden object-center object-cover"
+                                                    >
                                                     {{ $page.props.auth.user.name }}
 
                                                     <svg

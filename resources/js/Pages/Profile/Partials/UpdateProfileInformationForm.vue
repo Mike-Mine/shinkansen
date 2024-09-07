@@ -19,6 +19,7 @@ const user = usePage().props.auth.user;
 const form = useForm({
     name: user.name,
     email: user.email,
+    avatar: user.avatar,
 });
 </script>
 
@@ -33,6 +34,16 @@ const form = useForm({
         </header>
 
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-4">
+            <div class="relative w-28 h-28 rounded-full overflow-hidden border border-slate-300">
+                <label
+                    for="avatar"
+                    class="absolute inset-0 grid content-end"
+                >
+                    <span class="bg-white/70 pb-2 text-center">Avatar</span>
+                </label>
+
+                <img :src="`/storage/${form.avatar}` ?? '/storage/avatars/default_profile_image.jpg'" class="object-cover w-28 h-28">
+            </div>
             <div>
                 <InputLabel for="name" value="Name" />
 

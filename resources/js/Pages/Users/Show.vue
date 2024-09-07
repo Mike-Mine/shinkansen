@@ -22,9 +22,6 @@ defineProps({
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
                 <div class="sm:p-4 bg-white shadow sm:rounded-lg">
-                    <!-- <p>{{ user.name }}</p>
-                    <p>{{ user.email }}</p>
-                    <p>{{ dayjs(user.created_at).format('DD/MMM/YYYY') }} ({{ dayjs(user.created_at).fromNow() }})</p> -->
                     <TabGroup>
                         <TabList class="flex space-x-1 rounded-xl bg-blue-900/30 p-1">
                             <Tab
@@ -90,6 +87,12 @@ defineProps({
                             >
                                 <div class="flex items-center space-x-4">
                                     <div class="space-y-1">
+                                        <div class="relative w-28 h-28 rounded-full overflow-hidden border border-slate-300">
+                                            <img
+                                                :src="user.avatar ? `/storage/${user.avatar}` : '/storage/avatars/default_profile_image.jpg'"
+                                                class="object-cover w-28 h-28"
+                                            >
+                                        </div>
                                         <h2 class="text-lg font-semibold">{{ user.name }}</h2>
                                         <p class="text-sm text-gray-500">{{ user.email }}</p>
                                         <p class="text-sm text-gray-500">{{ dayjs(user.created_at).format('DD/MMM/YYYY') }} ({{ dayjs(user.created_at).fromNow() }})</p>

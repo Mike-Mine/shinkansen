@@ -24,13 +24,24 @@ defineProps({
                     <table class="w-full text-left table-auto sm:rounded-lg">
                     <thead class="bg-gray-200">
                         <tr>
-                        <th class="px-4 py-3 font-bold">Name</th>
-                        <th class="px-4 py-3 font-bold">Email</th>
-                        <th class="px-4 py-3 font-bold">Registered at</th>
+                            <th class="px-4 py-3 font-bold">Avatar</th>
+                            <th class="px-4 py-3 font-bold">Name</th>
+                            <th class="px-4 py-3 font-bold">Email</th>
+                            <th class="px-4 py-3 font-bold">Registered at</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="user in users" :key="user.id" class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="px-4 py-3">
+                                <img
+                                    :src="user.avatar
+                                        ? `/storage/${user.avatar}`
+                                        : '/storage/avatars/default_profile_image.jpg'
+                                    "
+                                    alt="avatar"
+                                    class="w-8 h-8 rounded-full overflow-hidden object-center object-cover"
+                                >
+                            </td>
                             <td class="px-4 py-3">
                                 <Link :href="route('users.show', user.id)" class="hover:underline">{{ user.name }}</Link>
                             </td>
