@@ -142,6 +142,9 @@ const showingNavigationDropdown = ref(false);
                             <ResponsiveNavLink :href="route('chat.index')" :active="route().current('chat.index')">
                                 Chat
                             </ResponsiveNavLink>
+                            <ResponsiveNavLink v-if="$page.props.auth.can['view users']" :href="route('users.index')" :active="route().current('users.*')">
+                                Users
+                            </ResponsiveNavLink>
                         </div>
 
                         <!-- Responsive Settings Options -->
