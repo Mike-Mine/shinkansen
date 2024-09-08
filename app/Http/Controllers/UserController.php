@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -49,6 +50,7 @@ class UserController extends Controller
     {
         return Inertia::render('Users/Show', [
             'user' => $user->load('roles', 'permissions'),
+            'allRoles' => Role::all(),
         ]);
     }
 
@@ -65,7 +67,11 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $validated = $request->validate([
+            'roles' => 'sometimes | array | exists:roles,name',
+        ]);
+
+        $user->syncRoles($validated['roles']);
     }
 
     /**

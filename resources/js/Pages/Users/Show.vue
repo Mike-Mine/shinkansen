@@ -1,22 +1,33 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { Link } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
+import { ref, computed, watch } from 'vue';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { ref } from 'vue'
-import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
+import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
 
 dayjs.extend(relativeTime);
 
-defineProps({
-    user: {
-        type: Object
-    },
+const props = defineProps({
+    user: Object,
+    allRoles: Array
 });
+
+const form = useForm({
+    roles: props.user.roles.map(role => role.name),
+});
+
+const hasChanges = computed(() => {
+    return JSON.stringify(form.roles) !== JSON.stringify(props.user.roles.map(role => role.name));
+});
+
+const resetChanges = () => {
+    form.reset();
+};
 </script>
+
 <template>
-    <Head title="Users" />
+    <Head title="Edit User" />
 
     <AuthenticatedLayout>
         <div class="py-8">
@@ -24,64 +35,35 @@ defineProps({
                 <div class="sm:p-4 bg-white shadow sm:rounded-lg">
                     <TabGroup>
                         <TabList class="flex space-x-1 rounded-xl bg-blue-900/30 p-1">
-                            <Tab
-                                as="template"
-                                key="profile"
-                                v-slot="{ selected }"
-                            >
+                            <Tab as="template" key="profile" v-slot="{ selected }">
                                 <button
                                     :class="[
                                         'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
                                         'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none',
-                                        selected
-                                            ? 'bg-white text-gray-900 shadow'
-                                            : 'text-white hover:bg-white/[0.14] hover:text-white',
+                                        selected ? 'bg-white text-gray-900 shadow' : 'text-white hover:bg-white/[0.14] hover:text-white',
                                     ]"
                                 >
                                     Profile
                                 </button>
                             </Tab>
-                            <!-- <Tab
-                                as="template"
-                                key="roles"
-                                v-slot="{ selected }"
-                            >
+                            <Tab as="template" key="roles" v-slot="{ selected }">
                                 <button
-                                :class="[
+                                    :class="[
                                         'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
                                         'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none',
-                                        selected
-                                            ? 'bg-white text-gray-900 shadow'
-                                            : 'text-white hover:bg-white/[0.14] hover:text-white',
+                                        selected ? 'bg-white text-gray-900 shadow' : 'text-white hover:bg-white/[0.14] hover:text-white',
                                     ]"
                                 >
                                     Roles
                                 </button>
                             </Tab>
-                            <Tab
-                            as="template"
-                                key="tasks"
-                                v-slot="{ selected }"
-                            >
-                                <button
-                                    :class="[
-                                        'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
-                                        'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
-                                        selected
-                                            ? 'bg-white text-blue-700 shadow'
-                                            : 'text-blue-100 hover:bg-white/[0.14] hover:text-white',
-                                    ]"
-                                >
-                                    Tasks
-                                </button>
-                            </Tab> -->
                         </TabList>
 
                         <TabPanels class="mt-2">
                             <TabPanel
                                 :class="[
                                     'rounded-xl bg-white p-3',
-                                    ' h-96 overflow-y-auto',
+                                    'h-96 overflow-y-auto',
                                     'focus:outline-none',
                                 ]"
                             >
@@ -91,7 +73,7 @@ defineProps({
                                             <img
                                                 :src="user.avatar ? `/storage/${user.avatar}` : '/storage/avatars/default_profile_image.jpg'"
                                                 class="object-cover w-28 h-28"
-                                            >
+                                            />
                                         </div>
                                         <h2 class="text-lg font-semibold">{{ user.name }}</h2>
                                         <p class="text-sm text-gray-500">{{ user.email }}</p>
@@ -99,22 +81,31 @@ defineProps({
                                     </div>
                                 </div>
                             </TabPanel>
-                            <!-- <TabPanel
-                                :class="[
-                                    'rounded-xl bg-white p-3',
-                                    'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
-                                ]"
-                            >
-                                <p>test 2</p>
-                            </TabPanel>
+
                             <TabPanel
                                 :class="[
                                     'rounded-xl bg-white p-3',
-                                    'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2',
+                                    'h-96 overflow-y-auto',
+                                    'focus:outline-none',
                                 ]"
                             >
-                                <p>test 3</p>
-                            </TabPanel> -->
+                                <div v-for="role in allRoles" :key="role.name" class="mb-2">
+                                    <label class="inline-flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            :value="role.name"
+                                            v-model="form.roles"
+                                            class="rounded-full h-5 w-5 border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                        />
+                                        <span class="ml-2">{{ role.name }}</span>
+                                    </label>
+                                </div>
+
+                                <div v-if="hasChanges" class="mt-4">
+                                    <button @click="form.put(route('users.update', user.id))" class="text-blue-600 hover:text-blue-900">Save</button>
+                                    <button @click="resetChanges" class="ml-2 text-gray-500 hover:text-gray-700">Cancel</button>
+                                </div>
+                            </TabPanel>
                         </TabPanels>
                     </TabGroup>
                 </div>
