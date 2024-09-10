@@ -42,7 +42,7 @@ const form = useForm({
                     <span class="bg-white/70 pb-2 text-center">Avatar</span>
                 </label>
 
-                <img :src="`/storage/${form.avatar}` ?? '/storage/avatars/default_profile_image.jpg'" class="object-cover w-28 h-28">
+                <img :src="form.avatar ? `/storage/${form.avatar}` : '/storage/avatars/default_profile_image.jpg'" class="object-cover w-28 h-28">
             </div>
             <div>
                 <InputLabel for="name" value="Name" />

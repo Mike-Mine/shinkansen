@@ -18,6 +18,10 @@ const props = defineProps({
     statuses: {
         type: Object,
         required: true
+    },
+    disabled: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -38,9 +42,11 @@ watch(selectedStatus, (newValue) => {
                     getStatusClass(selectedStatus),
                     'relative w-half cursor-default rounded-lg py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm'
                 ]"
+                :disabled="disabled"
             >
                 <span class="block truncate">{{ formatStatus(selectedStatus) }}</span>
                 <span
+                    v-if="!disabled"
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
                 >
                     <ChevronUpDownIcon

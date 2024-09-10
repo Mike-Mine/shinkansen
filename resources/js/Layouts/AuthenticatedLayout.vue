@@ -36,10 +36,10 @@ const showingNavigationDropdown = ref(false);
                                     <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                         Dashboard
                                     </NavLink>
-                                    <NavLink :href="route('tasks.index')" :active="route().current('tasks.*')">
+                                    <NavLink v-if="$page.props.auth.can['view tasks']" :href="route('tasks.index')" :active="route().current('tasks.*')">
                                         Tasks
                                     </NavLink>
-                                    <NavLink :href="route('chat.index')" :active="route().current('chat.index')">
+                                    <NavLink v-if="$page.props.auth.can['view chat messages']" :href="route('chat.index')" :active="route().current('chat.index')">
                                         Chat
                                     </NavLink>
                                     <NavLink v-if="$page.props.auth.can['view users']" :href="route('users.index')" :active="route().current('users.*')">
@@ -136,10 +136,10 @@ const showingNavigationDropdown = ref(false);
                             <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                 Dashboard
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('tasks.index')" :active="route().current('tasks.*')">
+                            <ResponsiveNavLink v-if="$page.props.auth.can['view tasks']" :href="route('tasks.index')" :active="route().current('tasks.*')">
                                 Tasks
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('chat.index')" :active="route().current('chat.index')">
+                            <ResponsiveNavLink v-if="$page.props.auth.can['view chat messages']" :href="route('chat.index')" :active="route().current('chat.index')">
                                 Chat
                             </ResponsiveNavLink>
                             <ResponsiveNavLink v-if="$page.props.auth.can['view users']" :href="route('users.index')" :active="route().current('users.*')">

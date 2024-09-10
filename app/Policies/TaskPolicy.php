@@ -29,7 +29,7 @@ class TaskPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasPermissionTo('create tasks');
     }
 
     /**
@@ -37,7 +37,27 @@ class TaskPolicy
      */
     public function update(User $user, Task $task): bool
     {
-        return $task->reporter()->is($user);
+        return $user->hasPermissionTo('update tasks')
+            || $task->reporter()->is($user);
+    }
+
+    /**
+     * Determine whether the user can update the task status.
+     */
+    public function updateStatus(User $user, Task $task): bool
+    {
+        return $user->hasPermissionTo('update task status')
+            || $task->reporter()->is($user)
+            || $task->assignee()->is($user);
+    }
+
+    /**
+     * Determine whether the user can update the task status.
+     */
+    public function updateAssignee(User $user, Task $task): bool
+    {
+        return $user->hasPermissionTo('assign tasks')
+            || $task->reporter()->is($user);
     }
 
     /**
@@ -45,7 +65,8 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task): bool
     {
-        return $this->update($user, $task);
+        return $task->reporter()->is($user)
+            || $user->hasPermissionTo('delete tasks');
     }
 
     /**

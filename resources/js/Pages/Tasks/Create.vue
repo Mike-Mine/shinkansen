@@ -7,7 +7,7 @@ import InputError from '@/Components/InputError.vue';
 
 import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
 
-defineProps(['users']);
+defineProps(['assignees']);
 
 const form = useForm({
     title: '',
@@ -68,7 +68,7 @@ const form = useForm({
                                 Assignee
                             </label>
                             <AssigneeSelector
-                                :users="users"
+                                :assignees="assignees"
                                 v-model="form.assignee_id"
                             />
                             <InputError :message="form.errors.assignee_id" class="mt-2" />

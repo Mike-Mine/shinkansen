@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 
@@ -51,6 +52,9 @@ class UserController extends Controller
         return Inertia::render('Users/Show', [
             'user' => $user->load('roles', 'permissions'),
             'allRoles' => Role::all(),
+            'can' => [
+                'update' => Gate::allows('update users', $user),
+            ]
         ]);
     }
 
@@ -67,6 +71,16 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        Gate::authorize('update', $user);
+
+        if (
+            $user->is(auth()->user())
+            && $user->hasRole('Admin')
+            && !in_array('Admin', $request->roles)
+        ) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'roles' => 'sometimes | array | exists:roles,name',
         ]);

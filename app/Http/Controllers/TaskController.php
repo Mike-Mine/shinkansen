@@ -23,7 +23,10 @@ class TaskController extends Controller
             ->paginate(10);
 
         return Inertia::render('Tasks/Index', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'can' => [
+                'create' => Gate::allows('create', Task::class),
+            ],
         ]);
     }
 
@@ -33,7 +36,7 @@ class TaskController extends Controller
     public function create(): Response
     {
         return Inertia::render('Tasks/Create', [
-            'users' => User::all(),
+            'assignees' => User::permission('fulfill tasks')->get(),
         ]);
     }
 
@@ -42,6 +45,8 @@ class TaskController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        Gate::authorize('create', Task::class);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
@@ -63,7 +68,13 @@ class TaskController extends Controller
             'task' => $task->load('reporter:id,name', 'assignee:id,name'),
             'comments' => $task->comments()->with('user:id,name')->orderBy('created_at', 'desc')->get(),
             'statuses' => TaskStatus::cases(),
-            'users' => User::select('id', 'name')->get()
+            'assignees' => User::permission('fulfill tasks')->get(),
+            'can' => [
+                'delete' => Gate::allows('delete', $task),
+                'updateStatus' => Gate::allows('updateStatus', $task),
+                'updateAssignee' => Gate::allows('updateAssignee', $task),
+                'update' => Gate::allows('update', $task),
+            ]
         ]);
     }
 
@@ -72,7 +83,13 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task): RedirectResponse
     {
-        Gate::authorize('update', $task);
+        if (
+            ((!empty($request->input('title')) || !empty($request->input('description'))) && Gate::denies('update', $task))
+            || (!empty($request->input('status')) && Gate::denies('updateStatus', $task))
+            || (!empty($request->input('assignee_id')) && Gate::denies('updateAssignee', $task))
+        ) {
+            abort(403);
+        }
 
         $validated = $request->validate([
             'status' => 'sometimes|required',

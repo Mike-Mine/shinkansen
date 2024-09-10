@@ -26,7 +26,10 @@ const props = defineProps({
     statuses: {
         type: Object,
     },
-    users: {
+    assignees: {
+        type: Object,
+    },
+    can: {
         type: Object,
     },
 });
@@ -77,13 +80,15 @@ watch(() => [
                                     <StatusSelector
                                         v-model="task.status"
                                         :statuses="statuses"
+                                        :disabled="!can.updateStatus"
                                     />
                                 </div>
                                 <div class="mb-4">
                                     <h3 class="text-sm font-medium text-gray-500 mb-1">Assignee</h3>
                                     <AssigneeSelector
-                                        :users="users"
+                                        :assignees="assignees"
                                         v-model="task.assignee_id"
+                                        :disabled="!can.updateAssignee"
                                     />
                                 </div>
                                 <div class="mb-4">
@@ -94,7 +99,7 @@ watch(() => [
                                     <p class="text-xs text-gray-500">Created: {{ dayjs(task.created_at).format('DD/MMM/YYYY HH:mm') }}</p>
                                     <p class="text-xs text-gray-500">Updated: {{ dayjs(task.updated_at).format('DD/MMM/YYYY HH:mm') }}</p>
                                 </div>
-                                <div class="mt-4 text-right">
+                                <div v-if="can.delete" class="mt-4 text-right">
                                     <Link
                                         :href="route('tasks.destroy', task.id)"
                                         class="text-red-600 text-sm hover:text-red-900"

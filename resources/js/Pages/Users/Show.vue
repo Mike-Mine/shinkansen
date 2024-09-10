@@ -10,7 +10,8 @@ dayjs.extend(relativeTime);
 
 const props = defineProps({
     user: Object,
-    allRoles: Array
+    allRoles: Array,
+    can: Object,
 });
 
 const form = useForm({
@@ -96,12 +97,13 @@ const resetChanges = () => {
                                             :value="role.name"
                                             v-model="form.roles"
                                             class="rounded-full h-5 w-5 border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                            :disabled="!can.update"
                                         />
                                         <span class="ml-2">{{ role.name }}</span>
                                     </label>
                                 </div>
 
-                                <div v-if="hasChanges" class="mt-4">
+                                <div v-if="hasChanges && can.update" class="mt-4">
                                     <button @click="form.put(route('users.update', user.id))" class="text-blue-600 hover:text-blue-900">Save</button>
                                     <button @click="resetChanges" class="ml-2 text-gray-500 hover:text-gray-700">Cancel</button>
                                 </div>
