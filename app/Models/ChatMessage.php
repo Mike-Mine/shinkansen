@@ -16,10 +16,6 @@ class ChatMessage extends Model
         'message'
     ];
 
-    protected $dispatchesEvents = [
-        'created' => ChatMessageCreated::class
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

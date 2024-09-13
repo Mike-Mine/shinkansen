@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatMessageCreated;
 use App\Models\ChatMessage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,7 +39,9 @@ class ChatMessageController extends Controller
             'message' => 'required|string|max:255',
         ]);
 
-        $request->user()->chatMessages()->create($validated);
+        $chatMessage = $request->user()->chatMessages()->create($validated);
+
+        broadcast(new ChatMessageCreated($chatMessage))->toOthers();
 
         return redirect(route('chat.index'));
     }
