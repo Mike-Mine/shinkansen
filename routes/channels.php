@@ -10,3 +10,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('chat', function (User $user) {
     return $user->hasPermissionTo('view chat messages');
 });
+
+Broadcast::channel('task.{id}', function (User $user) {
+    return $user->hasPermissionTo('view tasks');
+});

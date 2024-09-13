@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage, router } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
@@ -20,9 +21,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    comments: {
-        type: Object,
-    },
     statuses: {
         type: Object,
     },
@@ -33,8 +31,6 @@ const props = defineProps({
         type: Object,
     },
 });
-
-console.log(props.comments);
 
 const task = ref(props.task);
 
@@ -56,6 +52,16 @@ watch(() => [
         preserveScroll: true,
     });
 }, { deep: true });
+
+const page = usePage();
+
+const comments = computed(() => page.props.comments);
+
+Echo.private('task.' + task.value.id)
+    .listen('TaskCommentCreated', () => {
+        router.reload({ only: ['comments'] });
+    });
+
 </script>
 
 <template>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskCommentCreated;
 use App\Models\Comment;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -19,7 +20,9 @@ class CommentController extends Controller
             'message' => 'required|string|max:255',
         ]);
 
-        $request->user()->comments()->create($validated);
+        $comment = $request->user()->comments()->create($validated);
+
+        broadcast(new TaskCommentCreated($comment))->toOthers();
 
         return back();
     }
