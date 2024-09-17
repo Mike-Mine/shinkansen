@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     task: {
@@ -20,16 +19,8 @@ const startEditing = () => {
 };
 
 const saveTitle = () => {
-    useForm({
-        title: editedTitle.value,
-    }).patch(route('tasks.update', props.task.id), {
-        preserveState: true,
-        preserveScroll: true,
-        onSuccess: () => {
-            emit('update', { title: editedTitle.value });
-            editMode.value = false;
-        },
-    });
+    emit('update', { title: editedTitle.value });
+    editMode.value = false;
 };
 
 const cancelEditing = () => {

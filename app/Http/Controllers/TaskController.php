@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TaskStatus;
+use App\Events\TaskUpdated;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -103,6 +105,8 @@ class TaskController extends Controller
         ]);
 
         $task->update($validated);
+
+        broadcast(new TaskUpdated($task))->toOthers();
 
         return back()->with('success', 'Task updated successfully');
     }

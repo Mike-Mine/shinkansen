@@ -25,6 +25,11 @@ class Task extends Model
         'assignee_id',
     ];
 
+    public function parseChangedAttributes(): array
+    {
+        return collect($this->getChanges())->except(['updated_at'])->toArray();
+    }
+
     public function reporter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reporter_id');

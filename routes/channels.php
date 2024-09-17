@@ -11,6 +11,10 @@ Broadcast::channel('chat', function (User $user) {
     return $user->hasPermissionTo('view chat messages');
 });
 
-Broadcast::channel('task.{id}', function (User $user) {
+Broadcast::channel('task.{id}.comments', function (User $user) {
+    return $user->hasPermissionTo('view tasks');
+});
+
+Broadcast::channel('tasks.{id}', function (User $user) {
     return $user->hasPermissionTo('view tasks');
 });

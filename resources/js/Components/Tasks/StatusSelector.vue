@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import {
     Listbox,
     ListboxLabel,
@@ -11,9 +11,9 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import { formatStatus, getStatusClass } from '@/src/utils/taskStatus';
 
 const props = defineProps({
-    modelValue: {
-        type: [Number, String, null],
-        required: true
+    task: {
+        type: Object,
+        required: true,
     },
     statuses: {
         type: Object,
@@ -25,12 +25,19 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update']);
 
-const selectedStatus = ref(props.modelValue);
+const selectedStatus = computed({
+    get: () => props.task.status,
+    set: (newValue) => {
+        emit('update', { status: newValue });
+    },
+});
 
-watch(selectedStatus, (newValue) => {
-    emit('update:modelValue', newValue);
+watch(() => props.task.status, (newValue) => {
+    if (newValue !== selectedStatus.value) {
+        selectedStatus.value = newValue;
+    }
 });
 </script>
 

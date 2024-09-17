@@ -1,10 +1,7 @@
 <script setup>
-import { ref, watch } from 'vue';
-import { useForm, usePage, router } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useForm, usePage, router, Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { Link } from '@inertiajs/vue3';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -32,36 +29,54 @@ const props = defineProps({
     },
 });
 
-const task = ref(props.task);
+const task = ref({ ...props.task });
 
-const updateTask = (updatedData) => {
-    task.value = { ...task.value, ...updatedData };
-};
+const form = useForm({
+    status: task.value.status,
+    assignee_id: task.value.assignee_id,
+    title: task.value.title,
+    description: task.value.description,
+});
 
-watch(() => [
-    task.value.status,
-    task.value.assignee_id,
-    task.value.title,
-    task.value.description
-], ([newStatus, newAssigneeId]) => {
-    useForm({
-        status: newStatus,
-        assignee_id: newAssigneeId,
-    }).patch(route('tasks.update', task.value.id), {
+const updateTask = (updates) => {
+    Object.entries(updates).forEach(([field, value]) => {
+        if (form[field] !== value) {
+            form[field] = value;
+            task.value[field] = value;
+        }
+    });
+
+    form.patch(route('tasks.update', task.value.id), {
         preserveState: true,
         preserveScroll: true,
+        only: Object.keys(updates),
     });
-}, { deep: true });
+};
+
+const handleTaskUpdate = (updatedTask) => {
+    task.value = { ...task.value, ...updatedTask };
+};
 
 const page = usePage();
-
 const comments = computed(() => page.props.comments);
 
-Echo.private('task.' + task.value.id)
-    .listen('TaskCommentCreated', () => {
-        router.reload({ only: ['comments'] });
-    });
+onMounted(() => {
+    Echo.private(`task.${task.value.id}.comments`)
+        .listen('TaskCommentCreated', (event) => {
+            router.reload({ only: ['comments'] });
+        });
 
+    Echo.private(`tasks.${task.value.id}`)
+        .listen('TaskUpdated', (e) => {
+            handleTaskUpdate(e.task);
+        });
+});
+
+onUnmounted(() => {
+    Echo.leave(`task.${task.value.id}.comments`);
+
+    Echo.leave(`tasks.${task.value.id}`);
+});
 </script>
 
 <template>
@@ -84,17 +99,19 @@ Echo.private('task.' + task.value.id)
                                 <div class="mb-4">
                                     <h3 class="text-sm font-medium text-gray-500 mb-1">Status</h3>
                                     <StatusSelector
-                                        v-model="task.status"
+                                        :task="task"
                                         :statuses="statuses"
                                         :disabled="!can.updateStatus"
+                                        @update:modelValue="updateTask({ status: $event })"
                                     />
                                 </div>
                                 <div class="mb-4">
                                     <h3 class="text-sm font-medium text-gray-500 mb-1">Assignee</h3>
                                     <AssigneeSelector
+                                        :task="task"
                                         :assignees="assignees"
-                                        v-model="task.assignee_id"
                                         :disabled="!can.updateAssignee"
+                                        @update="updateTask"
                                     />
                                 </div>
                                 <div class="mb-4">

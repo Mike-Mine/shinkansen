@@ -11,36 +11,42 @@ import {
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 
 const props = defineProps({
+    task: {
+        type: Object,
+        required: true,
+    },
     assignees: {
         type: Array,
-        required: true
-    },
-    modelValue: {
-        type: [Number, String, null],
-        required: true
+        required: true,
     },
     disabled: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update']);
 
 const assigneesWithUnassigned = computed(() => [
     { id: null, name: 'Unassigned' },
-    ...props.assignees
+    ...props.assignees,
 ]);
 
-const selectedId = ref(props.modelValue);
+const selectedId = computed({
+    get: () => props.task.assignee_id,
+    set: (newValue) => {
+        emit('update', { assignee_id: newValue });
+    },
+});
 
-watch(selectedId, (newValue) => {
-    emit('update:modelValue', newValue);
+watch(() => props.task.assignee_id, (newValue) => {
+    if (newValue !== selectedId.value) {
+        selectedId.value = newValue;
+    }
 });
 
 const query = ref('');
-
-const filteredassignees = computed(() =>
+const filteredAssignees = computed(() =>
     query.value === ''
         ? assigneesWithUnassigned.value
         : assigneesWithUnassigned.value.filter((user) =>
@@ -73,13 +79,13 @@ const selectedUser = computed(() =>
                 @after-leave="query = ''">
                 <ComboboxOptions
                     class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                    <div v-if="filteredassignees.length === 0 && query !== ''"
+                    <div v-if="filteredAssignees.length === 0 && query !== ''"
                         class="relative cursor-default select-none px-4 py-2 text-gray-700">
                         Nothing found.
                     </div>
 
                     <ComboboxOption
-                        v-for="user in filteredassignees"
+                        v-for="user in filteredAssignees"
                         as="template"
                         :key="user.id"
                         :value="user.id"
