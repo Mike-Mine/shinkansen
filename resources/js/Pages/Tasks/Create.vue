@@ -69,7 +69,6 @@ const form = useForm({
                             </label>
                             <AssigneeSelector
                                 :assignees="assignees"
-                                v-model="form.assignee_id"
                             />
                             <InputError :message="form.errors.assignee_id" class="mt-2" />
                         </div>

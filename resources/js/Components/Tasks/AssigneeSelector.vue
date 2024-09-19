@@ -13,7 +13,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 const props = defineProps({
     task: {
         type: Object,
-        required: true,
+        required: false,
     },
     assignees: {
         type: Array,
@@ -33,17 +33,19 @@ const assigneesWithUnassigned = computed(() => [
 ]);
 
 const selectedId = computed({
-    get: () => props.task.assignee_id,
+    get: () => props.task ? props.task.assignee_id : null,
     set: (newValue) => {
         emit('update', { assignee_id: newValue });
     },
 });
 
-watch(() => props.task.assignee_id, (newValue) => {
-    if (newValue !== selectedId.value) {
-        selectedId.value = newValue;
-    }
-});
+if (props.task) {
+    watch(() => props.task.assignee_id, (newValue) => {
+        if (newValue !== selectedId.value) {
+            selectedId.value = newValue;
+        }
+    });
+}
 
 const query = ref('');
 const filteredAssignees = computed(() =>
