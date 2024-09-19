@@ -25,9 +25,32 @@ class Task extends Model
         'assignee_id',
     ];
 
-    public function parseChangedAttributes(): array
+    /**
+     * Get the task counts grouped by statuses.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getTaskCounts()
     {
-        return collect($this->getChanges())->except(['updated_at'])->toArray();
+        $taskCountsByStatuses = ['total' => static::count()];
+
+        foreach (TaskStatus::cases() as $status) {
+            $taskCountsByStatuses[$status->value] = static::countByStatus($status->value);
+        }
+
+        return collect($taskCountsByStatuses);
+    }
+
+    /**
+     * Get the count of tasks with the given status.
+     *
+     * @param TaskStatus|string $status
+     *
+     * @return int
+     */
+    public static function countByStatus($status)
+    {
+        return static::where('status', $status)->count();
     }
 
     public function reporter(): BelongsTo

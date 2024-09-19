@@ -1,6 +1,6 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
-import { formatStatus, getStatusClass } from '@/src/utils/taskStatus'
+import { Link } from '@inertiajs/vue3';
+import { formatStatus, getStatusClass } from '@/src/utils/taskStatus';
 
 const props = defineProps({
     tasks: {
@@ -19,7 +19,7 @@ const props = defineProps({
         type: String,
         required: true
     }
-})
+});
 
 </script>
 
