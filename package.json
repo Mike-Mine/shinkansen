@@ -22,8 +22,10 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.22",
         "@heroicons/vue": "^2.1.5",
+        "chart.js": "^4.4.4",
         "dayjs": "^1.11.12",
         "lodash": "^4.17.21",
-        "simplebar-vue": "^2.3.5"
+        "simplebar-vue": "^2.3.5",
+        "vue-chartjs": "^5.3.1"
     }
 }

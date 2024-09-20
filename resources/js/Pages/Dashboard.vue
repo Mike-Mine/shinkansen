@@ -2,7 +2,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import TaskList from '@/Components/Tasks/List.vue';
-import { formatStatus, getStatusClass } from '@/src/utils/taskStatus';
+import { formatStatus} from '@/src/utils/taskStatus';
+import TaskCompletionChart from '@/Components/Charts/TaskCompletion.vue';
 
 const props = defineProps({
     assignedTasks: {
@@ -55,17 +56,20 @@ const props = defineProps({
                             />
                         </div>
                         <div class="grid grid-cols-4 gap-4 mt-4">
-                            <div class="bg-white p-4 rounded-lg shadow border border-gray-300">
+                            <div class="bg-white p-4 rounded-lg shadow h-48">
                                 <h4 class="text-lg font-semibold mb-4">Users Statistics</h4>
                                 <p>Total users: {{ totalUsers }}</p>
                                 <p>Top Reporter: {{ topReporter.name }} ({{ topReporter.reported_tasks_count }})</p>
                                 <p>Top Assignee: {{ topAssignee.name }} ({{ topAssignee.assigned_tasks_count }})</p>
                             </div>
-                            <div class="bg-white p-4 rounded-lg shadow border border-gray-300">
+                            <div class="bg-white p-4 rounded-lg shadow h-48">
                                 <h4 class="text-lg font-semibold mb-4">Tasks Summary</h4>
                                 <p v-for="(count, status) in taskCounts">
                                     {{ formatStatus(status) }} tasks: {{ count }}
                                 </p>
+                            </div>
+                            <div class="bg-white p-4 rounded shadow col-span-2">
+                                <TaskCompletionChart :taskCounts="taskCounts" />
                             </div>
                         </div>
                     </div>

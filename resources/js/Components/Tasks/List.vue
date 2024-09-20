@@ -24,7 +24,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <div class="bg-white rounded-lg p-4 w-1/2 border border-gray-300 shadow">
+    <div class="bg-white rounded-lg p-4 w-1/2 shadow">
         <h3 class="text-lg font-semibold">{{ title }}</h3>
         <ul v-if="tasks.length" class="divide-y divide-gray-200">
             <li v-for="task in tasks" :key="task.id" class="py-2">
