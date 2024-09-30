@@ -78,7 +78,7 @@ watch(search, debounce(
                     <Link
                         v-for="link in users.links"
                         :key="link.url"
-                        :href="link.url"
+                        :href="link.url ?? 'null'"
                         v-html="link.label"
                         class="px-2"
                         :class="{ 'text-zinc-400': !link.url, 'text-indigo-500': link.active }"

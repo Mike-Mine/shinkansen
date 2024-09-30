@@ -68,7 +68,7 @@ class TaskController extends Controller
     {
         return Inertia::render('Tasks/Show', [
             'task' => $task->load('reporter:id,name', 'assignee:id,name'),
-            'comments' => $task->comments()->with('user:id,name')->orderBy('created_at', 'desc')->get(),
+            'comments' => $task->comments()->with('user:id,name')->orderBy('created_at', 'desc')->paginate(10),
             'statuses' => TaskStatus::cases(),
             'assignees' => User::permission('fulfill tasks')->get(),
             'can' => [

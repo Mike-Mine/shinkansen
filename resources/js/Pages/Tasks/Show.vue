@@ -135,7 +135,18 @@ onUnmounted(() => {
                             </div>
                         </div>
                         <div class="mt-4 border-t">
-                            <CommentsList :task="task" :comments="comments"/>
+                            <CommentsList :task="task" :comments="comments.data"/>
+                        </div>
+
+                        <div class="mt-4">
+                            <Link
+                                v-for="link in comments.links"
+                                :key="link.url"
+                                :href="link.url ?? 'null'"
+                                v-html="link.label"
+                                class="px-2"
+                                :class="{ 'text-zinc-400': !link.url, 'text-indigo-500': link.active }"
+                            />
                         </div>
                     </div>
                 </div>
