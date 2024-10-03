@@ -46,13 +46,13 @@ const props = defineProps({
                                 :tasks="assignedTasks"
                                 title="Assigned to you"
                                 empty-text="No tasks assigned"
-                                :view-all-route="'tasks.assigned.index'"
+                                :view-all-route="route('tasks.index', { assignee_id: $page.props.auth.user.id })"
                             />
                             <TaskList
                                 :tasks="reportedTasks"
                                 title="Reported by you"
                                 empty-text="No tasks reported"
-                                :view-all-route="'tasks.reported.index'"
+                                :view-all-route="route('tasks.index', { reporter_id: $page.props.auth.user.id })"
                             />
                         </div>
                         <div class="grid grid-cols-4 gap-4 mt-4">

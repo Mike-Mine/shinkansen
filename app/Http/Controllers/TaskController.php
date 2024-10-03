@@ -21,12 +21,16 @@ class TaskController extends Controller
     public function index(Request $request): Response
     {
         $tasks = Task::with('reporter:id,name', 'assignee:id,name')
-            ->filter(request(['search', 'reporter_id']))
+            ->filter(request(['search', 'reporter_id', 'assignee_id']))
             ->orderBy('updated_at', 'desc')
             ->paginate(10)
             ->withQueryString();
 
-        $searchFilters = $request->only(['search', 'reporter_id']);
+        $searchFilters = $request->only([
+            'search',
+            'reporter_id',
+            'assignee_id'
+        ]);
 
         return Inertia::render('Tasks/Index', [
             'tasks' => $tasks,

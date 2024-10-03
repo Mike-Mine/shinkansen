@@ -79,5 +79,9 @@ class Task extends Model
         if ($filters['reporter_id'] ?? false) {
             $query->where('reporter_id', request('reporter_id'));
         }
+
+        if ($filters['assignee_id'] ?? false) {
+            $query->where('assignee_id', request('assignee_id'));
+        }
     }
 }
