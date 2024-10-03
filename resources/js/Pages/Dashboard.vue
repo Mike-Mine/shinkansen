@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import TaskList from '@/Components/Tasks/List.vue';
 import { formatStatus} from '@/src/utils/taskStatus';
 import TaskCompletionChart from '@/Components/Charts/TaskCompletion.vue';
@@ -65,7 +65,15 @@ const props = defineProps({
                             <div class="bg-white p-4 rounded-lg shadow h-48">
                                 <h4 class="text-lg font-semibold mb-4">Tasks Summary</h4>
                                 <p v-for="(count, status) in taskCounts">
-                                    {{ formatStatus(status) }} tasks: {{ count }}
+                                    {{ formatStatus(status) }} tasks:
+                                    <Link
+                                        v-if="status !== 'total'"
+                                        :href="route('tasks.index', { status: status })"
+                                        class="hover:underline"
+                                    >
+                                        {{ count }}
+                                    </Link>
+                                    <span v-else>{{ count }}</span>
                                 </p>
                             </div>
                             <div class="bg-white p-4 rounded shadow col-span-2">
