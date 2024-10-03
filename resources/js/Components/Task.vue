@@ -12,7 +12,7 @@ const props = defineProps(['task']);
 const filtersStore = useFiltersStore();
 
 const selectUser = (id) => {
-  filtersStore.setReporterId(id);
+    filtersStore.setReporterId(id);
 };
 
 const { formattedStatus, statusClass } = useTaskStatus(props.task.status);
@@ -31,9 +31,12 @@ const { formattedStatus, statusClass } = useTaskStatus(props.task.status);
                     <Link :href="route('tasks.show', task.id)" class="block hover:underline">
                         <h3 class="text-lg font-semibold text-gray-900">{{ task.title }}</h3>
                     </Link>
-                    <span :class="[statusClass, 'px-2 py-1 text-xs font-medium rounded-full']">
+                    <button
+                        @click="filtersStore.setStatus(task.status)"
+                        :class="[statusClass, 'px-2 py-1 text-xs font-medium rounded-full']"
+                    >
                         {{ formattedStatus }}
-                    </span>
+                    </button>
                 </div>
 
                 <p class="mt-1 text-sm text-gray-600">{{ task.description }}</p>
@@ -43,7 +46,12 @@ const { formattedStatus, statusClass } = useTaskStatus(props.task.status);
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        <button @click="selectUser(task.reporter.id)" class="hover:underline">{{ task.reporter.name }}</button>
+                        <button
+                            @click="filtersStore.setReporterId(task.reporter.id)"
+                            class="hover:underline"
+                        >
+                            {{ task.reporter.name }}
+                        </button>
                     </div>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

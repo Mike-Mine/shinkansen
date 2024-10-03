@@ -16,7 +16,7 @@ const props = defineProps({
 const filtersStore = useFiltersStore();
 
 onMounted(() => {
-  filtersStore.initializeFromProps(props);
+    filtersStore.initializeFromProps(props);
 })
 
 const search = ref(props.filters.search);

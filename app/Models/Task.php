@@ -83,5 +83,9 @@ class Task extends Model
         if ($filters['assignee_id'] ?? false) {
             $query->where('assignee_id', request('assignee_id'));
         }
+
+        if ($filters['status'] ?? false) {
+            $query->where('status', request('status'));
+        }
     }
 }
