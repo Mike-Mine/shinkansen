@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useForm } from '@inertiajs/vue3';
+import { formatStatus } from '@/src/utils/taskStatus';
 
 export const useFiltersStore = defineStore('filters', {
     state: () => ({
@@ -8,6 +9,19 @@ export const useFiltersStore = defineStore('filters', {
         assigneeId: null,
         status: null,
     }),
+    getters: {
+        formattedStatus(state) {
+            return state.status ? formatStatus(state.status) : null;
+        },
+        list(state) {
+            return {
+                search: state.search,
+                reporter_id: state.reporterId,
+                assignee_id: state.assigneeId,
+                status: state.status,
+            };
+        }
+    },
     actions: {
         setSearch(query) {
             this.search = query;
@@ -44,5 +58,9 @@ export const useFiltersStore = defineStore('filters', {
             this.assigneeId = props.filters?.assignee_id || null;
             this.status = props.filters?.status || null;
         },
+        clearParam(paramName) {
+            this[paramName] = null;
+            this.updateURL();
+        }
     },
 });

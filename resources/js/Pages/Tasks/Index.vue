@@ -21,6 +21,14 @@ onMounted(() => {
 
 const search = ref(props.filters.search);
 
+const getReporterName = (id) => {
+    return props.tasks.data.find(task => task.reporter_id === Number(id)).reporter.name;
+}
+
+const getAssigneeName = (id) => {
+    return props.tasks.data.find(task => task.assignee_id === Number(id)).assignee.name;
+}
+
 watch(search, debounce(
     (query) => {
         filtersStore.setSearch(query);
@@ -35,7 +43,41 @@ watch(search, debounce(
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
                 <div class="flex justify-between mb-4">
-                    <div>filters</div>
+                    <div class="flex items-center gap-2">
+                        <button
+                            v-if="filtersStore.status"
+                            @click="filtersStore.clearParam('status')"
+                            class="px-2 py-1 rounded-md bg-gray-500 text-white flex items-center gap-1"
+                        >
+                            {{ filtersStore.formattedStatus }}
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <button
+                            v-if="filtersStore.reporterId"
+                            @click="filtersStore.clearParam('reporterId')"
+                            class="px-2 py-1 rounded-md bg-gray-500 text-white flex items-center gap-1"
+                        >
+                            Reporter: {{ getReporterName(filtersStore.reporterId) }}
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <button
+                            v-if="filtersStore.assigneeId"
+                            @click="filtersStore.clearParam('assigneeId')"
+                            class="px-2 py-1 rounded-md bg-gray-500 text-white flex items-center gap-1"
+                        >
+                            Assignee: {{ getAssigneeName(filtersStore.assigneeId) }}
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                     <div class="w-1/4">
                         <input
                             type="search"
