@@ -70,8 +70,14 @@ class Task extends Model
 
     public function scopeFilter($query, array $filters) {
         if ($filters['search'] ?? false) {
-            $query->where('title', 'like', '%' . request('search') . '%')
+            $query->where(function ($q) {
+                $q->where('title', 'like', '%' . request('search') . '%')
                 ->orWhere('description', 'like', '%' . request('search') . '%');
+            });
+        }
+
+        if ($filters['reporter_id'] ?? false) {
+            $query->where('reporter_id', request('reporter_id'));
         }
     }
 }

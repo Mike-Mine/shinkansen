@@ -4,21 +4,27 @@ import Task from '@/Components/Task.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { useFiltersStore } from '@/stores/filtersStore';
 
 const props = defineProps({
     tasks: Object,
     can: Object,
-    searchQuery: String,
+    filters: Object,
 });
 
-const search = ref(props.searchQuery);
+const filtersStore = useFiltersStore();
+
+onMounted(() => {
+  filtersStore.initializeFromProps(props);
+})
+
+const search = ref(props.filters.search);
 
 watch(search, debounce(
     (query) => {
-        router.get('/tasks', { search: query }, { preserveState: true });
-    },
-    500
+        filtersStore.setSearch(query);
+    }, 500
 ));
 </script>
 
