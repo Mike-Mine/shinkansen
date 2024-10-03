@@ -18,17 +18,20 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tasks = Task::with('reporter:id,name', 'assignee:id,name')
+            ->filter(request('search'))
             ->orderBy('updated_at', 'desc')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Tasks/Index', [
             'tasks' => $tasks,
             'can' => [
                 'create' => Gate::allows('create', Task::class),
             ],
+            'searchQuery' => $request->search,
         ]);
     }
 

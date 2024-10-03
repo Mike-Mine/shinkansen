@@ -1,10 +1,25 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Task from '@/Components/Task.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
+import { debounce } from 'lodash';
+import { ref, watch } from 'vue';
 
-defineProps(['tasks', 'can']);
+const props = defineProps({
+    tasks: Object,
+    can: Object,
+    searchQuery: String,
+});
+
+const search = ref(props.searchQuery);
+
+watch(search, debounce(
+    (query) => {
+        router.get('/tasks', { search: query }, { preserveState: true });
+    },
+    500
+));
 </script>
 
 <template>
@@ -13,6 +28,17 @@ defineProps(['tasks', 'can']);
     <AuthenticatedLayout>
         <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
+                <div class="flex justify-between mb-4">
+                    <div>filters</div>
+                    <div class="w-1/4">
+                        <input
+                            type="search"
+                            v-model="search"
+                            placeholder="Search..."
+                            class="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                        />
+                    </div>
+                </div>
                 <Link v-if="can.create" :href="route('tasks.create')" class="text-gray-600">
                     <div class="sm:p-4 bg-white shadow sm:rounded-lg hover:bg-gray-200">
                         <div class="flex justify-center">
@@ -23,20 +49,25 @@ defineProps(['tasks', 'can']);
                     </div>
                 </Link>
 
-                <Task
-                    v-for="task in tasks.data"
-                    :key="task.id"
-                    :task="task"
-                />
-                <div class="mt-4">
-                    <Link
-                        v-for="link in tasks.links"
-                        :key="link.url"
-                        :href="link.url ?? 'null'"
-                        v-html="link.label"
-                        class="px-2"
-                        :class="{ 'text-zinc-400': !link.url, 'text-indigo-500': link.active }"
+                <div v-if="Object.keys(tasks.data).length">
+                    <Task
+                        v-for="task in tasks.data"
+                        :key="task.id"
+                        :task="task"
                     />
+                    <div class="mt-4">
+                        <Link
+                            v-for="link in tasks.links"
+                            :key="link.label"
+                            :href="link.url ?? 'null'"
+                            v-html="link.label"
+                            class="px-2"
+                            :class="{ 'text-zinc-400': !link.url, 'text-indigo-500': link.active }"
+                        />
+                    </div>
+                </div>
+                <div v-else>
+                    No tasks found
                 </div>
             </div>
         </div>
