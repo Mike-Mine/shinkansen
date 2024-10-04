@@ -34,6 +34,8 @@ class ProfileController extends Controller
 
         if ($request->hasFile('avatar')) {
             $validated['avatar'] = Storage::disk('public')->put('avatars', $request->avatar);
+        } elseif (!empty($validated['avatar'])) {
+            unset($validated['avatar']);
         }
 
         $request->user()->fill($validated);

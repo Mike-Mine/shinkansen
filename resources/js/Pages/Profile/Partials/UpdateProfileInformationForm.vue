@@ -29,7 +29,15 @@ const change = (event) => {
 };
 
 const submit = () => {
-    form.post(route('profile.update'));
+    const formData = new FormData();
+    formData.append('name', form.name);
+    formData.append('email', form.email);
+
+    if (form.avatar instanceof File) {
+        formData.append('avatar', form.avatar);
+    }
+
+    form.post(route('profile.update'), formData);
 };
 
 </script>
@@ -56,6 +64,8 @@ const submit = () => {
                 <input type="file" id="avatar" @input="change" hidden>
 
                 <img :src="form.preview ? form.preview : (form.avatar ? `/storage/${form.avatar}` : '/storage/avatars/default_profile_image.jpg')" class="object-cover w-28 h-28">
+
+                <InputError class="mt-2" :message="form.errors.avatar" />
             </div>
             <div>
                 <InputLabel for="name" value="Name" />
