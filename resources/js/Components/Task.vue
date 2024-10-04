@@ -29,7 +29,7 @@ const { formattedStatus, statusClass } = useTaskStatus(props.task.status);
             <div class="flex-1">
                 <div class="flex justify-between items-center">
                     <Link :href="route('tasks.show', task.id)" class="block hover:underline">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ task.title }}</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">{{ task.title.substring(0, 80) }} ...</h3>
                     </Link>
                     <button
                         @click="filtersStore.setStatus(task.status)"
@@ -39,7 +39,7 @@ const { formattedStatus, statusClass } = useTaskStatus(props.task.status);
                     </button>
                 </div>
 
-                <p class="mt-1 text-sm text-gray-600">{{ task.description }}</p>
+                <p class="mt-1 text-sm text-gray-600">{{ task.description.substring(0, 160) }} ...</p>
 
                 <div class="mt-4 flex items-center text-sm text-gray-500 space-x-4">
                     <div>
