@@ -23,6 +23,8 @@ class Task extends Model
         'status',
         'reporter_id',
         'assignee_id',
+        'start_date',
+        'due_date',
     ];
 
     /**

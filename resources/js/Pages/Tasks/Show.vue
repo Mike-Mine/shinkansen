@@ -10,6 +10,7 @@ import StatusSelector from '@/Components/Tasks/StatusSelector.vue';
 import EditableTitle from '@/Components/Tasks/EditableTitle.vue';
 import EditableDescription from '@/Components/Tasks/EditableDescription.vue';
 import CommentsList from '@/Components/Comments/List.vue';
+import InputError from '@/Components/InputError.vue';
 
 dayjs.extend(relativeTime);
 
@@ -36,6 +37,8 @@ const form = useForm({
     assignee_id: task.value.assignee_id,
     title: task.value.title,
     description: task.value.description,
+    start_date: task.value.start_date,
+    due_date: task.value.due_date,
 });
 
 const updateTask = (updates) => {
@@ -52,6 +55,21 @@ const updateTask = (updates) => {
         only: Object.keys(updates),
     });
 };
+
+const startDate = ref(task.value.start_date);
+const dueDate = ref(task.value.due_date);
+
+watch(startDate, (newValue) => {
+    if (newValue !== task.value.start_date) {
+        updateTask({ start_date: newValue });
+    }
+});
+
+watch(dueDate, (newValue) => {
+    if (newValue !== task.value.due_date) {
+        updateTask({ due_date: newValue });
+    }
+});
 
 const handleTaskUpdate = (updatedTask) => {
     task.value = { ...task.value, ...updatedTask };
@@ -113,6 +131,24 @@ onUnmounted(() => {
                                         :disabled="!can.updateAssignee"
                                         @update="updateTask"
                                     />
+                                </div>
+                                <div class="mb-4">
+                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Start date</h3>
+                                    <input
+                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                        v-model="startDate"
+                                        type="date"
+                                    />
+                                    <InputError :message="form.errors.start_date" class="mt-2" />
+                                </div>
+                                <div class="mb-4">
+                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Due date</h3>
+                                    <input
+                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                        v-model="dueDate"
+                                        type="date"
+                                    />
+                                    <InputError :message="form.errors.due_date" class="mt-2" />
                                 </div>
                                 <div class="mb-4">
                                     <h3 class="text-sm font-medium text-gray-500 mb-1">Reporter</h3>

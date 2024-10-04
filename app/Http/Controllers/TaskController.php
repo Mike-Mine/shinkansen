@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -112,6 +111,8 @@ class TaskController extends Controller
             ],
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string|max:255',
+            'start_date' => 'sometimes|nullable|date',
+            'due_date' => 'sometimes|nullable|date',
         ]);
 
         $task->update($validated);
