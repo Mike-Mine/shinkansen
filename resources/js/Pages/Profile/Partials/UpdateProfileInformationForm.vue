@@ -20,7 +20,18 @@ const form = useForm({
     name: user.name,
     email: user.email,
     avatar: user.avatar,
+    preview: null,
 });
+
+const change = (event) => {
+    form.avatar = event.target.files[0];
+    form.preview = URL.createObjectURL(event.target.files[0]);
+};
+
+const submit = () => {
+    form.post(route('profile.update'));
+};
+
 </script>
 
 <template>
@@ -33,7 +44,7 @@ const form = useForm({
             </p>
         </header>
 
-        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-4">
+        <form @submit.prevent="submit" class="mt-6 space-y-4">
             <div class="relative w-28 h-28 rounded-full overflow-hidden border border-slate-300">
                 <label
                     for="avatar"
@@ -42,7 +53,9 @@ const form = useForm({
                     <span class="bg-white/70 pb-2 text-center">Avatar</span>
                 </label>
 
-                <img :src="form.avatar ? `/storage/${form.avatar}` : '/storage/avatars/default_profile_image.jpg'" class="object-cover w-28 h-28">
+                <input type="file" id="avatar" @input="change" hidden>
+
+                <img :src="form.preview ? form.preview : (form.avatar ? `/storage/${form.avatar}` : '/storage/avatars/default_profile_image.jpg')" class="object-cover w-28 h-28">
             </div>
             <div>
                 <InputLabel for="name" value="Name" />
