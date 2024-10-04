@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="flex justify-between items-start">
+    <div v-if="paginator.links.length > 3" class="flex justify-between items-start">
         <div class="flex items-center rounded-md overflow-hidden shadow-l">
             <Link
                 v-for="link in paginator.links"
