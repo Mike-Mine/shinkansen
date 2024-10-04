@@ -11,6 +11,8 @@ import EditableTitle from '@/Components/Tasks/EditableTitle.vue';
 import EditableDescription from '@/Components/Tasks/EditableDescription.vue';
 import CommentsList from '@/Components/Comments/List.vue';
 import InputError from '@/Components/InputError.vue';
+import Container from '@/Components/Container.vue';
+import PaginationLinks from '@/Components/PaginationLinks.vue';
 
 dayjs.extend(relativeTime);
 
@@ -101,92 +103,83 @@ onUnmounted(() => {
     <Head title="Task Details" />
 
     <AuthenticatedLayout>
-        <div class="py-8">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <div class="flex flex-col md:flex-row">
-                            <div class="w-full md:w-2/3 pr-0 md:pr-4">
-                                <EditableTitle :task="task" @update="updateTask" />
+        <Container>
+            <div class="bg-white shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="flex flex-col md:flex-row">
+                        <div class="w-full md:w-2/3 pr-0 md:pr-4">
+                            <EditableTitle :task="task" @update="updateTask" />
 
-                                <hr class="my-4">
+                            <hr class="my-4">
 
-                                <EditableDescription :task="task" @update="updateTask" />
+                            <EditableDescription :task="task" @update="updateTask" />
+                        </div>
+                        <div class="w-full md:w-1/3 mt-4 md:mt-0 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-gray-200">
+                            <div class="mb-4">
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Status</h3>
+                                <StatusSelector
+                                    :task="task"
+                                    :statuses="statuses"
+                                    :disabled="!can.updateStatus"
+                                    @update:modelValue="updateTask({ status: $event })"
+                                />
                             </div>
-                            <div class="w-full md:w-1/3 mt-4 md:mt-0 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-gray-200">
-                                <div class="mb-4">
-                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Status</h3>
-                                    <StatusSelector
-                                        :task="task"
-                                        :statuses="statuses"
-                                        :disabled="!can.updateStatus"
-                                        @update:modelValue="updateTask({ status: $event })"
-                                    />
-                                </div>
-                                <div class="mb-4">
-                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Assignee</h3>
-                                    <AssigneeSelector
-                                        :task="task"
-                                        :assignees="assignees"
-                                        :disabled="!can.updateAssignee"
-                                        @update="updateTask"
-                                    />
-                                </div>
-                                <div class="mb-4">
-                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Start date</h3>
-                                    <input
-                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                        v-model="startDate"
-                                        type="date"
-                                    />
-                                    <InputError :message="form.errors.start_date" class="mt-2" />
-                                </div>
-                                <div class="mb-4">
-                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Due date</h3>
-                                    <input
-                                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                        v-model="dueDate"
-                                        type="date"
-                                    />
-                                    <InputError :message="form.errors.due_date" class="mt-2" />
-                                </div>
-                                <div class="mb-4">
-                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Reporter</h3>
-                                    <p>{{ task.reporter.name }}</p>
-                                </div>
-                                <div class="mt-6">
-                                    <p class="text-xs text-gray-500">Created: {{ dayjs(task.created_at).format('DD/MMM/YYYY HH:mm') }}</p>
-                                    <p class="text-xs text-gray-500">Updated: {{ dayjs(task.updated_at).format('DD/MMM/YYYY HH:mm') }}</p>
-                                </div>
-                                <div v-if="can.delete" class="mt-4 text-right">
-                                    <Link
-                                        :href="route('tasks.destroy', task.id)"
-                                        class="text-red-600 text-sm hover:text-red-900"
-                                        method="delete"
-                                        as="button"
-                                    >
-                                        Delete Task
-                                    </Link>
-                                </div>
+                            <div class="mb-4">
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Assignee</h3>
+                                <AssigneeSelector
+                                    :task="task"
+                                    :assignees="assignees"
+                                    :disabled="!can.updateAssignee"
+                                    @update="updateTask"
+                                />
+                            </div>
+                            <div class="mb-4">
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Start date</h3>
+                                <input
+                                    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    v-model="startDate"
+                                    type="date"
+                                />
+                                <InputError :message="form.errors.start_date" class="mt-2" />
+                            </div>
+                            <div class="mb-4">
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Due date</h3>
+                                <input
+                                    class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    v-model="dueDate"
+                                    type="date"
+                                />
+                                <InputError :message="form.errors.due_date" class="mt-2" />
+                            </div>
+                            <div class="mb-4">
+                                <h3 class="text-sm font-medium text-gray-500 mb-1">Reporter</h3>
+                                <p>{{ task.reporter.name }}</p>
+                            </div>
+                            <div class="mt-6">
+                                <p class="text-xs text-gray-500">Created: {{ dayjs(task.created_at).format('DD/MMM/YYYY HH:mm') }}</p>
+                                <p class="text-xs text-gray-500">Updated: {{ dayjs(task.updated_at).format('DD/MMM/YYYY HH:mm') }}</p>
+                            </div>
+                            <div v-if="can.delete" class="mt-4 text-right">
+                                <Link
+                                    :href="route('tasks.destroy', task.id)"
+                                    class="text-red-600 text-sm hover:text-red-900"
+                                    method="delete"
+                                    as="button"
+                                >
+                                    Delete Task
+                                </Link>
                             </div>
                         </div>
-                        <div class="mt-4 border-t">
-                            <CommentsList :task="task" :comments="comments.data"/>
-                        </div>
+                    </div>
+                    <div class="mt-4 border-t">
+                        <CommentsList :task="task" :comments="comments.data"/>
+                    </div>
 
-                        <div class="mt-4">
-                            <Link
-                                v-for="link in comments.links"
-                                :key="link.url"
-                                :href="link.url ?? 'null'"
-                                v-html="link.label"
-                                class="px-2"
-                                :class="{ 'text-zinc-400': !link.url, 'text-indigo-500': link.active }"
-                            />
-                        </div>
+                    <div class="mt-4">
+                        <PaginationLinks :paginator="comments" />
                     </div>
                 </div>
             </div>
-        </div>
+        </Container>
     </AuthenticatedLayout>
 </template>
