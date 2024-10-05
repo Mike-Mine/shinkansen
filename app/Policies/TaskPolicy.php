@@ -74,7 +74,7 @@ class TaskPolicy
      */
     public function restore(User $user, Task $task): bool
     {
-        //
+        return $user->hasPermissionTo('restore tasks');
     }
 
     /**
@@ -82,6 +82,6 @@ class TaskPolicy
      */
     public function forceDelete(User $user, Task $task): bool
     {
-        //
+        return $user->hasPermissionTo('force delete tasks');
     }
 }

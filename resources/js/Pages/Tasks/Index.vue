@@ -13,12 +13,17 @@ const props = defineProps({
     tasks: Object,
     can: Object,
     filters: Object,
+    deleted: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const filtersStore = useFiltersStore();
 
 onMounted(() => {
     filtersStore.initializeFromProps(props);
+    filtersStore.setControllerName(props.deleted ? 'tasks.deleted' : 'tasks.index');
 })
 
 const search = ref(props.filters.search);
@@ -108,7 +113,7 @@ watch(search, debounce(
                     <PaginationLinks :paginator="tasks" />
                 </div>
             </div>
-            <div v-else>
+            <div v-else class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 No tasks found
             </div>
         </Container>

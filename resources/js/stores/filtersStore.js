@@ -4,6 +4,7 @@ import { formatStatus } from '@/src/utils/taskStatus';
 
 export const useFiltersStore = defineStore('filters', {
     state: () => ({
+        controllerName: 'tasks.index',
         search: '',
         reporterId: null,
         assigneeId: null,
@@ -46,7 +47,7 @@ export const useFiltersStore = defineStore('filters', {
                 assignee_id: this.assigneeId,
                 status: this.status,
             });
-            form.get(route('tasks.index'), {
+            form.get(route(this.controllerName), {
                 preserveState: true,
                 preserveScroll: true,
                 replace: true,
@@ -57,6 +58,9 @@ export const useFiltersStore = defineStore('filters', {
             this.reporterId = props.filters?.reporter_id || null;
             this.assigneeId = props.filters?.assignee_id || null;
             this.status = props.filters?.status || null;
+        },
+        setControllerName(controllerName) {
+            this.controllerName = controllerName;
         },
         clearParam(paramName) {
             this[paramName] = null;
