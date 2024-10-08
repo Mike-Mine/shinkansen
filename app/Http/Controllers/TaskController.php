@@ -101,6 +101,7 @@ class TaskController extends Controller
                 'updateStatus' => Gate::allows('updateStatus', $task),
                 'updateAssignee' => Gate::allows('updateAssignee', $task),
                 'update' => Gate::allows('update', $task),
+                'manageComments' => auth()->user()->can('manage comments'),
             ]
         ]);
     }

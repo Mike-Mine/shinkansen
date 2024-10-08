@@ -172,7 +172,7 @@ onUnmounted(() => {
                         </div>
                     </div>
                     <div class="mt-4 border-t">
-                        <CommentsList :task="task" :comments="comments.data"/>
+                        <CommentsList :task="task" :comments="comments.data" :can="can"/>
                     </div>
 
                     <div class="mt-4">

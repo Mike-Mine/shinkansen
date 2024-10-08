@@ -10,7 +10,7 @@ import { ref } from 'vue';
 
 dayjs.extend(relativeTime);
 
-const props = defineProps(['comment']);
+const props = defineProps(['comment', 'can']);
 
 const form = useForm({
     message: props.comment.message,
@@ -31,7 +31,7 @@ const editing = ref(false);
                     <small class="ml-2 text-sm text-gray-600">{{ dayjs(comment.created_at).fromNow() }}</small>
                     <small v-if="comment.created_at !== comment.updated_at" class="text-sm text-gray-600"> &middot; edited</small>
                 </div>
-                <Dropdown v-if="comment.user.id === $page.props.auth.user.id">
+                <Dropdown v-if="comment.user.id === $page.props.auth.user.id || can.manageComments">
                     <template #trigger>
                         <button>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">

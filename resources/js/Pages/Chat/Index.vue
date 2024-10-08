@@ -12,6 +12,10 @@ const page = usePage();
 
 const chatMessages = computed(() => page.props.chatMessages);
 
+defineProps({
+    can: Object,
+});
+
 const form = useForm({
     message: '',
 });
@@ -49,6 +53,7 @@ Echo.private('chat')
                     v-for="chatMessage in chatMessages"
                     :key="chatMessage.id"
                     :chatMessage="chatMessage"
+                    :can="can"
                 />
             </div>
         </Container>

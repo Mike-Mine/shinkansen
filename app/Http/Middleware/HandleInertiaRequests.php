@@ -32,7 +32,8 @@ class HandleInertiaRequests extends Middleware
         $viewPermissions = [
             'view chat messages',
             'view tasks',
-            'view users'
+            'view users',
+            'view deleted tasks'
         ];
 
         return [

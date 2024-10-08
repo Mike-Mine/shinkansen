@@ -6,7 +6,8 @@ import { useForm, Head } from '@inertiajs/vue3';
 
 const props = defineProps([
     'task',
-    'comments'
+    'comments',
+    'can'
 ]);
 
 const form = useForm({
@@ -34,6 +35,7 @@ const form = useForm({
                 v-for="comment in comments"
                 :key="comment.id"
                 :comment="comment"
+                :can="can"
             />
         </div>
     </div>

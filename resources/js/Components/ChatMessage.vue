@@ -10,7 +10,7 @@ import { ref } from 'vue';
 
 dayjs.extend(relativeTime);
 
-const props = defineProps(['chatMessage']);
+const props = defineProps(['chatMessage', 'can']);
 
 const form = useForm({
     message: props.chatMessage.message,
@@ -31,7 +31,7 @@ const editing = ref(false);
                     <small class="ml-2 text-sm text-gray-600">{{ dayjs(chatMessage.created_at).fromNow() }}</small>
                     <small v-if="chatMessage.created_at !== chatMessage.updated_at" class="text-sm text-gray-600"> &middot; edited</small>
                 </div>
-                <Dropdown v-if="chatMessage.user.id === $page.props.auth.user.id">
+                <Dropdown v-if="chatMessage.user.id === $page.props.auth.user.id || can.manageChatMessages">
                     <template #trigger>
                         <button>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">

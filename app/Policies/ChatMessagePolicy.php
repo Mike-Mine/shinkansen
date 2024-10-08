@@ -37,7 +37,7 @@ class ChatMessagePolicy
      */
     public function update(User $user, ChatMessage $chatMessage): bool
     {
-        return $chatMessage->user()->is($user);
+        return $chatMessage->user()->is($user) || $user->can('manage chat messages');
     }
 
     /**
