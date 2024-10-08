@@ -29,15 +29,22 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $viewPermissions = [
+            'view chat messages',
+            'view tasks',
+            'view users'
+        ];
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
                 'can' => auth()->check()
-                    ? $request->user()->getAllPermissions()->mapWithKeys(function ($value, $key) {
-                        return [$value->name => true];
-                    })->all()
-                    : [],
+                    ? $request->user()->getAllPermissions()
+                        ->whereIn('name', $viewPermissions)
+                        ->mapWithKeys(fn($permission) => [$permission->name => true])
+                        ->all()
+                : [],
             ],
         ];
     }
