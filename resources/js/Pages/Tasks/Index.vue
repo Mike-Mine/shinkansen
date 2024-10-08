@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Task from '@/Components/Task.vue';
+import Task from '@/Components/Tasks/Item.vue';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
