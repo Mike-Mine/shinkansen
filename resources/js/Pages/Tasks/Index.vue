@@ -13,6 +13,8 @@ const props = defineProps({
     tasks: Object,
     can: Object,
     filters: Object,
+    reporterName: String,
+    assigneeName: String,
     deleted: {
         type: Boolean,
         default: false
@@ -27,14 +29,6 @@ onMounted(() => {
 })
 
 const search = ref(props.filters.search);
-
-const getReporterName = (id) => {
-    return props.tasks.data.find(task => task.reporter_id === Number(id)).reporter.name;
-}
-
-const getAssigneeName = (id) => {
-    return props.tasks.data.find(task => task.assignee_id === Number(id)).assignee.name;
-}
 
 watch(search, debounce(
     (query) => {
@@ -66,7 +60,7 @@ watch(search, debounce(
                         @click="filtersStore.clearParam('reporterId')"
                         class="px-2 py-1 rounded-md bg-gray-500 text-white flex items-center gap-1"
                     >
-                        Reporter: {{ getReporterName(filtersStore.reporterId) }}
+                        Reporter: {{ reporterName }}
 
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -77,7 +71,7 @@ watch(search, debounce(
                         @click="filtersStore.clearParam('assigneeId')"
                         class="px-2 py-1 rounded-md bg-gray-500 text-white flex items-center gap-1"
                     >
-                        Assignee: {{ getAssigneeName(filtersStore.assigneeId) }}
+                        Assignee: {{ assigneeName }}
 
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

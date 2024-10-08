@@ -32,12 +32,28 @@ class TaskController extends Controller
             'status',
         ]);
 
+        if (!empty($searchFilters['reporter_id'])) {
+            $reporterName = $tasks->first(function ($task) use ($searchFilters) {
+                return $task->reporter_id === $searchFilters['reporter_id'];
+            })?->reporter->name
+                ?? User::find($searchFilters['reporter_id'])->name;
+        }
+
+        if (!empty($searchFilters['assignee_id'])) {
+            $assigneeName = $tasks->first(function ($task) use ($searchFilters) {
+                return $task->assignee_id === $searchFilters['assignee_id'];
+            })?->assignee->name
+                ?? User::find($searchFilters['assignee_id'])->name;
+        }
+
         return Inertia::render('Tasks/Index', [
             'tasks' => $tasks,
             'can' => [
                 'create' => Gate::allows('create', Task::class),
             ],
             'filters' => $searchFilters,
+            'reporterName' => $reporterName ?? '',
+            'assigneeName' => $assigneeName ?? '',
         ]);
     }
 

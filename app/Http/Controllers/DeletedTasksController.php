@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
@@ -30,12 +31,24 @@ class DeletedTasksController extends Controller
             'status',
         ]);
 
+        $reporterName = $tasks->first(function ($task) use ($searchFilters) {
+            return $task->reporter_id === $searchFilters['reporter_id'];
+        })?->reporter->name
+            ?? User::find($searchFilters['reporter_id'])->name;
+
+        $assigneeName = $tasks->first(function ($task) use ($searchFilters) {
+            return $task->assignee_id === $searchFilters['assignee_id'];
+        })?->assignee->name
+            ?? User::find($searchFilters['assignee_id'])->name;
+
         return Inertia::render('Tasks/Index', [
             'tasks' => $tasks,
             'can' => [
                 'create' => false,
             ],
             'filters' => $searchFilters,
+            'reporterName' => $reporterName,
+            'assigneeName' => $assigneeName,
             'deleted' => true
         ]);
     }
