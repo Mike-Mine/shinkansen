@@ -32,7 +32,6 @@ class MoreRolesSeeder extends Seeder
             'delete tasks',
             'create tasks',
             'assign tasks',
-            'unassign tasks',
             'view tasks',
         ]);
 

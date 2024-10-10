@@ -112,6 +112,7 @@ class TaskController extends Controller
                 'updateAssignee' => Gate::allows('updateAssignee', $task),
                 'update' => Gate::allows('update', $task),
                 'manageComments' => auth()->user()->can('manage comments'),
+                'manageDates' => Gate::allows('manageDates', $task),
             ]
         ]);
     }
@@ -125,6 +126,7 @@ class TaskController extends Controller
             ((!empty($request->input('title')) || !empty($request->input('description'))) && Gate::denies('update', $task))
             || (!empty($request->input('status')) && Gate::denies('updateStatus', $task))
             || (!empty($request->input('assignee_id')) && Gate::denies('updateAssignee', $task))
+            || (!empty($request->input('start_date')) || !empty($request->input('due_date')) && Gate::denies('manageDates', $task))
         ) {
             abort(403);
         }

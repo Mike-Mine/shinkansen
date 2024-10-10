@@ -23,7 +23,6 @@ class RolesAndPermissionsSeeder extends Seeder
             'delete tasks',
             'create tasks',
             'assign tasks',
-            'unassign tasks',
             'view tasks',
             'view chat messages',
             'create chat messages',

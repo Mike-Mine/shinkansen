@@ -109,11 +109,11 @@ onUnmounted(() => {
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="flex flex-col md:flex-row">
                         <div class="w-full md:w-2/3 pr-0 md:pr-4">
-                            <EditableTitle v-model="task.title" @update="updateTask" />
+                            <EditableTitle v-model="task.title" @update="updateTask" :viewOnly="!can.update"/>
 
                             <hr class="my-4">
 
-                            <EditableDescription v-model="task.description" @update="updateTask" />
+                            <EditableDescription v-model="task.description" @update="updateTask" :viewOnly="!can.update"/>
                         </div>
                         <div class="w-full md:w-1/3 mt-4 md:mt-0 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-gray-200">
                             <div class="mb-4 flex justify-between">
@@ -122,7 +122,7 @@ onUnmounted(() => {
                                     <StatusSelector
                                         v-model="task.status"
                                         :statuses="statuses"
-                                        :disabled="!can.updateStatus"
+                                        :viewOnly="!can.updateStatus"
                                         @update:modelValue="updateTask({ status: $event })"
                                         class="w-full"
                                     />
@@ -136,19 +136,19 @@ onUnmounted(() => {
                                 <AssigneeSelector
                                     v-model="task.assignee_id"
                                     :assignees="assignees"
-                                    :disabled="!can.updateAssignee"
+                                    :viewOnly="!can.updateAssignee"
                                     :defaultAssigneeName="defaultAssigneeName"
                                     @update:modelValue="updateTask({ assignee_id: $event })"
                                 />
                             </div>
                             <div class="mb-4">
                                 <h3 class="text-sm font-medium text-gray-500 mb-1">Start date</h3>
-                                <DateInput v-model="startDate"/>
+                                <DateInput v-model="startDate" :viewOnly="!can.manageDates"/>
                                 <InputError :message="form.errors.start_date" class="mt-2" />
                             </div>
                             <div class="mb-4">
                                 <h3 class="text-sm font-medium text-gray-500 mb-1">Due date</h3>
-                                <DateInput v-model="dueDate"/>
+                                <DateInput v-model="dueDate" :viewOnly="!can.manageDates"/>
                                 <InputError :message="form.errors.due_date" class="mt-2" />
                             </div>
                             <div class="mb-4">

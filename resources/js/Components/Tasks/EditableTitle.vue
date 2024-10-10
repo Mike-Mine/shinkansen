@@ -6,6 +6,13 @@ const model = defineModel({
     required: true,
 });
 
+defineProps({
+    viewOnly: {
+        type: Boolean,
+        default: false
+    }
+});
+
 const emit = defineEmits(['update']);
 
 const editMode = ref(false);
@@ -28,7 +35,7 @@ const saveTitle = () => {
     <div class="flex items-center mb-4">
         <div v-if="!editMode" class="flex items-start space-x-2">
             <h1 class="text-2xl font-bold break-all">{{ model }}</h1>
-            <button @click="startEditing" class="ml-2 text-gray-500 hover:text-gray-700">
+            <button v-if="!viewOnly" @click="startEditing" class="ml-2 text-gray-500 hover:text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17.27L16.18 12.09L19.78 15.69L13 22.5L6.5 22.5L6.5 16L13 9.5L16.5 13M16.5 13L19 16.5M19 16.5L11 17.27" />
                 </svg>

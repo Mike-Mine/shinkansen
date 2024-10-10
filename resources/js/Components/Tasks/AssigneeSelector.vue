@@ -24,7 +24,7 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    disabled: {
+    viewOnly: {
         type: Boolean,
         default: false,
     }
@@ -54,10 +54,10 @@ const selectedUser = computed(() =>
                     class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
                     :displayValue="() => selectedUser.name"
                     @change="query = $event.target.value"
-                    :disabled="disabled"
+                    :disabled="viewOnly"
                 />
-                <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" :disabled="disabled">
-                    <ChevronUpDownIcon v-if="!disabled" class="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" :disabled="viewOnly">
+                    <ChevronUpDownIcon v-if="!viewOnly" class="h-5 w-5 text-gray-400" aria-hidden="true" />
                 </ComboboxButton>
             </div>
             <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0"

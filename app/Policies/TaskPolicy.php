@@ -84,4 +84,9 @@ class TaskPolicy
     {
         return $user->hasPermissionTo('force delete tasks');
     }
+
+    public function manageDates(User $user, Task $task): bool
+    {
+        return $task->reporter()->is($user) || $user->hasPermissionTo('update task dates');
+    }
 }

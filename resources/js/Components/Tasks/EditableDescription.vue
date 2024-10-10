@@ -6,6 +6,13 @@ const model = defineModel({
     required: true,
 });
 
+defineProps({
+    viewOnly: {
+        type: Boolean,
+        default: false
+    }
+});
+
 const emit = defineEmits(['update']);
 
 const editMode = ref(false);
@@ -29,7 +36,7 @@ const saveDescription = () => {
         <div v-if="!editMode">
             <h2 class="text-lg font-semibold mb-2">Description</h2>
             <p>{{ model }}</p>
-            <button @click="startEditing" class="text-sm text-gray-500 hover:text-gray-700">
+            <button v-if="!viewOnly" @click="startEditing" class="text-sm text-gray-500 hover:text-gray-700">
                 Edit Description
             </button>
         </div>
