@@ -116,14 +116,20 @@ onUnmounted(() => {
                             <EditableDescription v-model="task.description" @update="updateTask" />
                         </div>
                         <div class="w-full md:w-1/3 mt-4 md:mt-0 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-gray-200">
-                            <div class="mb-4">
-                                <h3 class="text-sm font-medium text-gray-500 mb-1">Status</h3>
-                                <StatusSelector
-                                    v-model="task.status"
-                                    :statuses="statuses"
-                                    :disabled="!can.updateStatus"
-                                    @update:modelValue="updateTask({ status: $event })"
-                                />
+                            <div class="mb-4 flex justify-between">
+                                <div class="w-full">
+                                    <h3 class="text-sm font-medium text-gray-500 mb-1">Status</h3>
+                                    <StatusSelector
+                                        v-model="task.status"
+                                        :statuses="statuses"
+                                        :disabled="!can.updateStatus"
+                                        @update:modelValue="updateTask({ status: $event })"
+                                        class="w-full"
+                                    />
+                                </div>
+                                <div v-if="form.recentlySuccessful">
+                                    <p class="text-sm text-green-600">Saved.</p>
+                                </div>
                             </div>
                             <div class="mb-4">
                                 <h3 class="text-sm font-medium text-gray-500 mb-1">Assignee</h3>
