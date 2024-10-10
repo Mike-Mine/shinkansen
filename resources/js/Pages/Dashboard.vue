@@ -56,13 +56,13 @@ const props = defineProps({
                         />
                     </div>
                     <div class="grid grid-cols-4 gap-4 mt-4">
-                        <div class="bg-white p-4 rounded-lg shadow h-48">
+                        <div class="bg-white p-4 rounded-lg shadow h-60">
                             <h4 class="text-lg font-semibold mb-4">Users Statistics</h4>
                             <p>Total users: {{ totalUsers }}</p>
                             <p>Top Reporter: {{ topReporter.name }} ({{ topReporter.reported_tasks_count }})</p>
                             <p>Top Assignee: {{ topAssignee.name }} ({{ topAssignee.assigned_tasks_count }})</p>
                         </div>
-                        <div class="bg-white p-4 rounded-lg shadow h-48">
+                        <div class="bg-white p-4 rounded-lg shadow h-60">
                             <h4 class="text-lg font-semibold mb-4">Tasks Summary</h4>
                             <p v-for="(count, status) in taskCounts">
                                 {{ formatStatus(status) }} tasks:

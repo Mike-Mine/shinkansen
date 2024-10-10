@@ -24,12 +24,18 @@ onMounted(() => {
     chartRef.value = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Open', 'In Progress', 'Done'],
+            labels: ['Open', 'In Progress', 'Ready', 'Cancelled', 'Done'],
             datasets: [
                 {
                     label: 'Tasks by Status',
-                    backgroundColor: ['#3b82f6', '#f59e0b', '#10b981'],
-                    data: [props.taskCounts.open, props.taskCounts.in_progress, props.taskCounts.done],
+                    backgroundColor: ['#bdbdbd', '#f59e0b', '#3b82f6', '#ff4d4d', '#10b981'],
+                    data: [
+                        props.taskCounts.open,
+                        props.taskCounts.in_progress,
+                        props.taskCounts.ready,
+                        props.taskCounts.cancelled,
+                        props.taskCounts.done
+                    ],
                 }
             ]
         },

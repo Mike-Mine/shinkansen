@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
 use App\Models\Task;
 use App\Models\User;
 use Inertia\Inertia;
@@ -11,11 +12,11 @@ class DashboardController extends Controller
     public function index()
     {
         $topReporter = User::withCount(['reportedTasks' => function ($query) {
-            $query->where('status', 'done');
+            $query->where('status', TaskStatus::DONE);
         }])->orderBy('reported_tasks_count', 'desc')->first();
 
         $topAssignee = User::withCount(['assignedTasks' => function ($query) {
-            $query->where('status', 'done');
+            $query->where('status', TaskStatus::DONE);
         }])->orderBy('assigned_tasks_count', 'desc')->first();
 
         return Inertia::render('Dashboard', [
