@@ -10,7 +10,16 @@ import { ref } from 'vue';
 
 dayjs.extend(relativeTime);
 
-const props = defineProps(['chatMessage', 'can']);
+const props = defineProps({
+    chatMessage: {
+        type: Object,
+        required: true,
+    },
+    can: {
+        type: Object,
+        required: true,
+    },
+});
 
 const form = useForm({
     message: props.chatMessage.message,

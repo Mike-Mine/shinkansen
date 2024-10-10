@@ -10,9 +10,18 @@ import Container from '@/Components/Container.vue';
 dayjs.extend(relativeTime);
 
 const props = defineProps({
-    user: Object,
-    allRoles: Array,
-    can: Object,
+    user: {
+        type: Object,
+        required: true,
+    },
+    allRoles: {
+        type: Array,
+        required: true,
+    },
+    can: {
+        type: Object,
+        required: true,
+    },
 });
 
 const form = useForm({

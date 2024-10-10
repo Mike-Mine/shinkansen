@@ -10,11 +10,26 @@ import Container from '@/Components/Container.vue';
 import PaginationLinks from '@/Components/PaginationLinks.vue';
 
 const props = defineProps({
-    tasks: Object,
-    can: Object,
-    filters: Object,
-    reporterName: String,
-    assigneeName: String,
+    tasks: {
+        type: Object,
+        required: true
+    },
+    can: {
+        type: Object,
+        required: true
+    },
+    filters: {
+        type: Object,
+        required: true
+    },
+    reporterName: {
+        type: String,
+        required: true
+    },
+    assigneeName: {
+        type: String,
+        required: true
+    },
     deleted: {
         type: Boolean,
         default: false

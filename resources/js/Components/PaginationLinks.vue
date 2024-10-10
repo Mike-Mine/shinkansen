@@ -2,7 +2,10 @@
 import { Link } from '@inertiajs/vue3';
 
 defineProps({
-    paginator: Object,
+    paginator: {
+        type: Object,
+        required: true,
+    },
 })
 
 </script>

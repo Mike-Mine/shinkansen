@@ -7,7 +7,12 @@ import { useFiltersStore } from '@/stores/filtersStore';
 
 dayjs.extend(relativeTime);
 
-const props = defineProps(['task']);
+const props = defineProps({
+    task: {
+        type: Object,
+        required: true,
+    }
+});
 
 const filtersStore = useFiltersStore();
 

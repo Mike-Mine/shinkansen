@@ -4,11 +4,20 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { useForm, Head } from '@inertiajs/vue3';
 
-const props = defineProps([
-    'task',
-    'comments',
-    'can'
-]);
+const props = defineProps({
+    task: {
+        type: Object,
+        required: true,
+    },
+    comments: {
+        type: Object,
+        required: true,
+    },
+    can: {
+        type: Object,
+        required: true,
+    },
+});
 
 const form = useForm({
     message: '',

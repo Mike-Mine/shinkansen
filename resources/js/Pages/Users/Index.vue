@@ -14,10 +14,12 @@ dayjs.extend(relativeTime);
 
 const props = defineProps({
     users: {
-        type: Object
+        type: Object,
+        required: true
     },
     searchQuery: {
-        type: String
+        type: String,
+        required: true
     }
 });
 

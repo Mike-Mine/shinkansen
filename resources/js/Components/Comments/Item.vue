@@ -10,7 +10,16 @@ import { ref } from 'vue';
 
 dayjs.extend(relativeTime);
 
-const props = defineProps(['comment', 'can']);
+const props = defineProps({
+    comment: {
+        type: Object,
+        required: true,
+    },
+    can: {
+        type: Object,
+        required: true,
+    },
+});
 
 const form = useForm({
     message: props.comment.message,
