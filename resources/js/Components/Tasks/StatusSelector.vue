@@ -1,20 +1,19 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
 import {
     Listbox,
-    ListboxLabel,
     ListboxButton,
     ListboxOptions,
     ListboxOption,
 } from '@headlessui/vue';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
+import { ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 import { formatStatus, getStatusClass } from '@/src/utils/taskStatus';
 
+const model = defineModel({
+    type: String,
+    required: true,
+});
+
 const props = defineProps({
-    task: {
-        type: Object,
-        required: true,
-    },
     statuses: {
         type: Object,
         required: true
@@ -24,34 +23,19 @@ const props = defineProps({
         default: false
     }
 });
-
-const emit = defineEmits(['update']);
-
-const selectedStatus = computed({
-    get: () => props.task.status,
-    set: (newValue) => {
-        emit('update', { status: newValue });
-    },
-});
-
-watch(() => props.task.status, (newValue) => {
-    if (newValue !== selectedStatus.value) {
-        selectedStatus.value = newValue;
-    }
-});
 </script>
 
 <template>
-    <Listbox v-model="selectedStatus">
+    <Listbox v-model="model">
         <div class="relative mt-1">
             <ListboxButton
                 :class="[
-                    getStatusClass(selectedStatus),
+                    getStatusClass(model),
                     'relative w-half cursor-default rounded-lg py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm'
                 ]"
                 :disabled="disabled"
             >
-                <span class="block truncate">{{ formatStatus(selectedStatus) }}</span>
+                <span class="block truncate">{{ formatStatus(model) }}</span>
                 <span
                     v-if="!disabled"
                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"

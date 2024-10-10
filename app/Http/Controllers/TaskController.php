@@ -62,8 +62,11 @@ class TaskController extends Controller
      */
     public function create(): Response
     {
+        $assignees = collect([0 => User::DEFAULT_UNASSIGNED_NAME])->merge(User::permission('fulfill tasks')->get()->pluck('name', 'id'));
+
         return Inertia::render('Tasks/Create', [
-            'assignees' => User::permission('fulfill tasks')->get(),
+            'assignees' => $assignees,
+            'defaultAssigneeName' => User::DEFAULT_UNASSIGNED_NAME,
         ]);
     }
 
@@ -78,6 +81,8 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'assignee_id' => 'nullable|exists:users,id',
+            'start_date' => 'nullable|date',
+            'due_date' => 'nullable|date',
         ]);
 
         $validated['reporter_id'] = $request->user()->id;
@@ -91,11 +96,16 @@ class TaskController extends Controller
      */
     public function show(Task $task): Response
     {
+        $assignees = User::permission('fulfill tasks')->get()
+            ->map(fn ($user) => ['id' => $user->id, 'name' => $user->name])
+            ->prepend(['id' => 0, 'name' => User::DEFAULT_UNASSIGNED_NAME]);
+
         return Inertia::render('Tasks/Show', [
             'task' => $task->load('reporter:id,name', 'assignee:id,name'),
             'comments' => $task->comments()->with('user:id,name')->orderBy('created_at', 'desc')->paginate(10),
             'statuses' => TaskStatus::cases(),
-            'assignees' => User::permission('fulfill tasks')->get(),
+            'assignees' => $assignees,
+            'defaultAssigneeName' => User::DEFAULT_UNASSIGNED_NAME,
             'can' => [
                 'delete' => Gate::allows('delete', $task),
                 'updateStatus' => Gate::allows('updateStatus', $task),

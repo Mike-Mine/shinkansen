@@ -10,59 +10,42 @@ import {
 } from '@headlessui/vue';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid';
 
+const model = defineModel({
+    type: Number,
+    required: true,
+});
+
 const props = defineProps({
-    task: {
-        type: Object,
-        required: false,
-    },
     assignees: {
-        type: Array,
+        type: Object,
+        required: true,
+    },
+    defaultAssigneeName: {
+        type: String,
         required: true,
     },
     disabled: {
         type: Boolean,
         default: false,
-    },
+    }
 });
-
-const emit = defineEmits(['update']);
-
-const assigneesWithUnassigned = computed(() => [
-    { id: null, name: 'Unassigned' },
-    ...props.assignees,
-]);
-
-const selectedId = computed({
-    get: () => props.task ? props.task.assignee_id : null,
-    set: (newValue) => {
-        emit('update', { assignee_id: newValue });
-    },
-});
-
-if (props.task) {
-    watch(() => props.task.assignee_id, (newValue) => {
-        if (newValue !== selectedId.value) {
-            selectedId.value = newValue;
-        }
-    });
-}
 
 const query = ref('');
 const filteredAssignees = computed(() =>
     query.value === ''
-        ? assigneesWithUnassigned.value
-        : assigneesWithUnassigned.value.filter((user) =>
-            user.name.toLowerCase().includes(query.value.toLowerCase())
+        ? props.assignees
+        : props.assignees.filter((assignee) =>
+            assignee.name.toLowerCase().includes(query.value.toLowerCase())
         )
 );
 
 const selectedUser = computed(() =>
-    assigneesWithUnassigned.value.find(user => user.id === selectedId.value) || { id: null, name: 'Unassigned' }
+    props.assignees.find(assignee => assignee.id === model.value) || { id: null, name: props.defaultAssigneeName }
 );
 </script>
 
 <template>
-    <Combobox v-model="selectedId">
+    <Combobox v-model="model">
         <div class="relative mt-1">
             <div
                 class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm"
@@ -87,10 +70,9 @@ const selectedUser = computed(() =>
                     </div>
 
                     <ComboboxOption
-                        v-for="user in filteredAssignees"
-                        as="template"
-                        :key="user.id"
-                        :value="user.id"
+                        v-for="assignee in filteredAssignees"
+                        :key="assignee.id"
+                        :value="assignee.id"
                         v-slot="{ active, selected }"
                     >
                         <li class="relative cursor-default select-none py-2 pl-10 pr-4" :class="{
@@ -98,7 +80,7 @@ const selectedUser = computed(() =>
                             'text-gray-900': !active,
                         }">
                             <span class="block truncate" :class="{ 'font-medium': selected, 'font-normal': !selected }">
-                                {{ user.name }}
+                                {{ assignee.name }}
                             </span>
                             <span
                                 v-if="selected"

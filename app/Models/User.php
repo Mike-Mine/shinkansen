@@ -14,6 +14,8 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, SoftDeletes, HasRoles;
 
+    public const DEFAULT_UNASSIGNED_NAME = 'Unassigned';
+
     /**
      * The attributes that are mass assignable.
      *

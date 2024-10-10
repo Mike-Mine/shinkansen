@@ -7,13 +7,25 @@ import InputError from '@/Components/InputError.vue';
 
 import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
 import Container from '@/Components/Container.vue';
+import DateInput from '@/Components/DateInput.vue';
 
-defineProps(['assignees']);
+defineProps({
+    assignees: {
+        type: Object,
+        required: true,
+    },
+    defaultAssigneeName: {
+        type: String,
+        required: true,
+    }
+});
 
 const form = useForm({
     title: '',
     description: '',
-    assignee_id: '',
+    assignee_id: 0,
+    start_date: '',
+    due_date: '',
 });
 </script>
 
@@ -55,8 +67,24 @@ const form = useForm({
                         </label>
                         <AssigneeSelector
                             :assignees="assignees"
+                            :defaultAssigneeName="defaultAssigneeName"
+                            v-model="form.assignee_id"
                         />
                         <InputError :message="form.errors.assignee_id" class="mt-2" />
+                    </div>
+
+                    <div class="mb-4 flex items-center gap-2">
+                        <div>
+                            <label class="block font-medium text-sm text-gray-700">Start date</label>
+                            <DateInput v-model="form.start_date"/>
+                            <InputError :message="form.errors.start_date" class="mt-2" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-sm text-gray-700">Due date</label>
+                            <DateInput v-model="form.due_date"/>
+                            <InputError :message="form.errors.due_date" class="mt-2" />
+                        </div>
+                        
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
