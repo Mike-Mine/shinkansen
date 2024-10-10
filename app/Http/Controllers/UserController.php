@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoles;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -75,8 +76,8 @@ class UserController extends Controller
 
         if (
             $user->is(auth()->user())
-            && $user->hasRole('Admin')
-            && !in_array('Admin', $request->roles)
+            && $user->hasRole(UserRoles::ADMIN)
+            && !in_array(UserRoles::ADMIN, $request->roles)
         ) {
             abort(403);
         }

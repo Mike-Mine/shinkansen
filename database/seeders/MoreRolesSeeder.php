@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRoles;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -37,7 +38,7 @@ class MoreRolesSeeder extends Seeder
 
         // reporter, assignee, manager
 
-        $managerRole = Role::create(['name' => 'manager']);
+        $managerRole = Role::create(['name' => UserRoles::MANAGER]);
         $managerRole->givePermissionTo($chatPermissions
             ->merge($taskPermissions)
             ->merge($userPermissions->filter(function ($permission) {
@@ -45,7 +46,7 @@ class MoreRolesSeeder extends Seeder
             }))
         );
 
-        $reporterRole = Role::create(['name' => 'reporter']);
+        $reporterRole = Role::create(['name' => UserRoles::REPORTER]);
         $reporterRole->givePermissionTo($chatPermissions
             ->merge($taskPermissions->filter(function ($permission) {
                 return in_array($permission, ['view tasks', 'create tasks', 'assign tasks']);
@@ -55,7 +56,7 @@ class MoreRolesSeeder extends Seeder
             }))
         );
 
-        $assigneeRole = Role::create(['name' => 'assignee']);
+        $assigneeRole = Role::create(['name' => UserRoles::ASSIGNEE]);
         $assigneeRole->givePermissionTo($chatPermissions
             ->merge($taskPermissions->filter(function ($permission) {
                 return $permission === 'view tasks';
