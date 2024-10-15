@@ -17,7 +17,14 @@ class DeletedTasksController extends Controller
      */
     public function index(Request $request): Response
     {
-        $tasks = Task::with('reporter:id,name', 'assignee:id,name')
+        $tasks = Task::with([
+                'reporter' => function ($query) {
+                    $query->withTrashed()->select('id', 'name', 'deleted_at');
+                },
+                'assignee' => function ($query) {
+                    $query->withTrashed()->select('id', 'name', 'deleted_at');
+                },
+            ])
             ->filter(request(['search', 'reporter_id', 'assignee_id', 'status']))
             ->onlyTrashed()
             ->orderBy('deleted_at', 'desc')
@@ -35,14 +42,14 @@ class DeletedTasksController extends Controller
             $reporterName = $tasks->first(function ($task) use ($searchFilters) {
                 return $task->reporter_id === $searchFilters['reporter_id'];
             })?->reporter->name
-                ?? User::find($searchFilters['reporter_id'])->name;
+            ?? User::where('id', $searchFilters['reporter_id'])->withTrashed()->first()?->name;
         }
 
         if (!empty($searchFilters['assignee_id'])) {
             $assigneeName = $tasks->first(function ($task) use ($searchFilters) {
                 return $task->assignee_id === $searchFilters['assignee_id'];
             })?->assignee->name
-                ?? User::find($searchFilters['assignee_id'])->name;
+            ?? User::where('id', $searchFilters['assignee_id'])->withTrashed()->first()?->name;
         }
 
         return Inertia::render('Tasks/Index', [

@@ -19,7 +19,14 @@ class TaskController extends Controller
      */
     public function index(Request $request): Response
     {
-        $tasks = Task::with('reporter:id,name', 'assignee:id,name')
+        $tasks = Task::with([
+                'reporter' => function ($query) {
+                    $query->withTrashed()->select('id', 'name', 'deleted_at');
+                },
+                'assignee' => function ($query) {
+                    $query->withTrashed()->select('id', 'name', 'deleted_at');
+                },
+            ])
             ->filter(request(['search', 'reporter_id', 'assignee_id', 'status']))
             ->orderBy('updated_at', 'desc')
             ->paginate(10)
@@ -36,14 +43,14 @@ class TaskController extends Controller
             $reporterName = $tasks->first(function ($task) use ($searchFilters) {
                 return $task->reporter_id === $searchFilters['reporter_id'];
             })?->reporter->name
-                ?? User::find($searchFilters['reporter_id'])->name;
+            ?? User::where('id', $searchFilters['reporter_id'])->withTrashed()->first()?->name;
         }
 
         if (!empty($searchFilters['assignee_id'])) {
             $assigneeName = $tasks->first(function ($task) use ($searchFilters) {
                 return $task->assignee_id === $searchFilters['assignee_id'];
             })?->assignee->name
-                ?? User::find($searchFilters['assignee_id'])->name;
+            ?? User::where('id', $searchFilters['assignee_id'])->withTrashed()->first()?->name;
         }
 
         return Inertia::render('Tasks/Index', [
@@ -100,9 +107,30 @@ class TaskController extends Controller
             ->map(fn ($user) => ['id' => $user->id, 'name' => $user->name])
             ->prepend(['id' => 0, 'name' => User::DEFAULT_UNASSIGNED_NAME]);
 
+        $task = $task->load([
+            'reporter' => function ($query) {
+                $query->withTrashed()->select('id', 'name', 'deleted_at');
+            },
+            'assignee' => function ($query) {
+                $query->withTrashed()->select('id', 'name', 'deleted_at');
+            },
+        ]);
+
+        if ($task->assignee?->deleted_at !== null) {
+            $assignees->push([
+                'id' => $task->assignee_id,
+                'name' => $task->assignee->name . ' (Unlicensed)',
+            ]);
+        }
+
         return Inertia::render('Tasks/Show', [
-            'task' => $task->load('reporter:id,name', 'assignee:id,name'),
-            'comments' => $task->comments()->with('user:id,name')->orderBy('created_at', 'desc')->paginate(10),
+            'task' => $task,
+            'comments' => $task->comments()
+                ->with(['user' => function ($query) {
+                    $query->withTrashed()->select('id', 'name', 'deleted_at');
+                }])
+                ->orderBy('created_at', 'desc'
+                )->paginate(10),
             'statuses' => TaskStatus::cases(),
             'assignees' => $assignees,
             'defaultAssigneeName' => User::DEFAULT_UNASSIGNED_NAME,

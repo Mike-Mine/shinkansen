@@ -60,7 +60,7 @@ const { formattedStatus, statusClass } = useTaskStatus(props.task.status);
                                 @click="filtersStore.setReporterId(task.reporter.id)"
                                 class="hover:underline"
                             >
-                                {{ task.reporter.name }}
+                                {{ task.reporter.name }}{{ task.reporter.deleted_at ? ' (Unlicensed)' : '' }}
                             </button>
                         </div>
                         <div>

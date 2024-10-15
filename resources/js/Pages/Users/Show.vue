@@ -1,11 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
 import Container from '@/Components/Container.vue';
+import DeleteForm from '@/Components/Users/DeleteForm.vue';
 
 dayjs.extend(relativeTime);
 
@@ -89,6 +90,11 @@ const resetChanges = () => {
                                     <p class="text-sm text-gray-500">{{ user.email }}</p>
                                     <p class="text-sm text-gray-500">{{ dayjs(user.created_at).format('DD/MMM/YYYY') }} ({{ dayjs(user.created_at).fromNow() }})</p>
                                 </div>
+                            </div>
+                            <div v-if="can.delete" class="mt-4">
+                                <hr />
+                                <h2 class="text-lg font-medium text-gray-900 my-4">Danger zone</h2>
+                                <DeleteForm :user="user" />
                             </div>
                         </TabPanel>
 

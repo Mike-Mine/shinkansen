@@ -18,7 +18,9 @@ class ChatMessageController extends Controller
     public function index(): Response
     {
         return Inertia::render('Chat/Index', [
-            'chatMessages' => ChatMessage::with('user:id,name')->latest()->get(),
+            'chatMessages' => ChatMessage::with(['user' => function ($query) {
+                $query->withTrashed();
+            }])->latest()->get(),
             'can' => [
                 'manageChatMessages' => auth()->user()->can('manage chat messages'),
             ]

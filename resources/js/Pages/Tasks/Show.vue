@@ -153,7 +153,7 @@ onUnmounted(() => {
                             </div>
                             <div class="mb-4">
                                 <h3 class="text-sm font-medium text-gray-500 mb-1">Reporter</h3>
-                                <p>{{ task.reporter.name }}</p>
+                                <p>{{ task.reporter.name }}{{ task.reporter.deleted_at ? ' (Unlicensed)' : '' }}</p>
                             </div>
                             <div class="mt-6">
                                 <p class="text-xs text-gray-500">Created: {{ dayjs(task.created_at).format('DD/MMM/YYYY HH:mm') }}</p>

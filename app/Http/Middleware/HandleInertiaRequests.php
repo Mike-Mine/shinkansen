@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRoles;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -40,6 +41,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'isAdmin' => auth()->check() ? $request->user()->hasRole(UserRoles::ADMIN) : false,
                 'can' => auth()->check()
                     ? $request->user()->getAllPermissions()
                         ->whereIn('name', $viewPermissions)

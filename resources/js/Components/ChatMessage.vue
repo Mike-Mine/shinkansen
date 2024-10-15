@@ -36,7 +36,7 @@ const editing = ref(false);
         <div class="flex-1">
             <div class="flex justify-between items-center">
                 <div>
-                    <span class="text-gray-800">{{ chatMessage.user.name }}</span>
+                    <span class="text-gray-800">{{ chatMessage.user.name }}{{ chatMessage.user.deleted_at ? ' (Unlicensed)' : '' }}</span>
                     <small class="ml-2 text-sm text-gray-600">{{ dayjs(chatMessage.created_at).fromNow() }}</small>
                     <small v-if="chatMessage.created_at !== chatMessage.updated_at" class="text-sm text-gray-600"> &middot; edited</small>
                 </div>

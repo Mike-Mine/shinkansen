@@ -25,7 +25,7 @@ class UserController extends Controller
                 }
             )->paginate(10)
                 ->withQueryString(),
-            'searchQuery' => $request->search,
+            'searchQuery' => $request->search ?? '',
         ]);
     }
 
@@ -55,6 +55,7 @@ class UserController extends Controller
             'allRoles' => Role::all(),
             'can' => [
                 'update' => Gate::allows('update users', $user),
+                'delete' => !$user->hasRole(UserRoles::ADMIN) && Gate::allows('delete users', $user),
             ]
         ]);
     }
@@ -94,6 +95,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        Gate::authorize('delete', $user);
+
+        $user->delete();
+
+        return redirect()->route('users.index');
     }
 }
