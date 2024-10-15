@@ -20,12 +20,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth', 'verified')->group(function () {
-    Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index');
+    Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index')->middleware('can:view chat messages');
     Route::post('/chat', [ChatMessageController::class, 'store'])->name('chat.store');
-    Route::put('/chat/{chatMessage}', [ChatMessageController::class, 'update'])->name('chat.update');
-    Route::delete('/chat/{chatMessage}', [ChatMessageController::class, 'destroy'])->name('chat.destroy');
+    Route::put('/chat/{chatMessage}', [ChatMessageController::class, 'update']);
+    Route::delete('/chat/{chatMessage}', [ChatMessageController::class, 'destroy']);
 
-    Route::resource('tasks', TaskController::class);
+    Route::resource('tasks', TaskController::class)->middleware('can:view tasks');
 
     Route::get('/deleted-tasks', [DeletedTasksController::class, 'index'])->name('tasks.deleted')->middleware('can:view deleted tasks');
 
@@ -36,7 +36,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::resource('comments', CommentController::class)
         ->only('store', 'update', 'destroy');
 
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)->middleware('can:view users');
 });
 
 require __DIR__.'/auth.php';
