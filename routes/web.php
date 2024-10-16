@@ -7,9 +7,7 @@ use App\Http\Controllers\DeletedTasksController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
-use App\Models\Task;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -22,8 +20,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/chat', [ChatMessageController::class, 'index'])->name('chat.index')->middleware('can:view chat messages');
     Route::post('/chat', [ChatMessageController::class, 'store'])->name('chat.store');
-    Route::put('/chat/{chatMessage}', [ChatMessageController::class, 'update']);
-    Route::delete('/chat/{chatMessage}', [ChatMessageController::class, 'destroy']);
+    Route::put('/chat/{chatMessage}', [ChatMessageController::class, 'update'])->name('chat.update');
+    Route::delete('/chat/{chatMessage}', [ChatMessageController::class, 'destroy'])->name('chat.destroy');
 
     Route::resource('tasks', TaskController::class)->middleware('can:view tasks');
 

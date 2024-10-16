@@ -164,7 +164,7 @@ class TaskController extends Controller
             'assignee_id' => [
                 'sometimes',
                 'nullable',
-                'exists:users,id,deleted_at,NULL',
+                'exists:users,id',
             ],
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string|max:255',
