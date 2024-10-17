@@ -18,29 +18,32 @@ class MoreRolesSeeder extends Seeder
             'view chat messages',
             'create chat messages',
             'update chat messages',
-            'delete chat messages',
+            'delete chat messages'
         ]);
 
         $userPermissions = collect([
             'view users',
-            'create users',
             'update users',
-            'delete users',
+            'delete users'
         ]);
 
         $taskPermissions = collect([
-            'edit tasks',
             'delete tasks',
             'create tasks',
             'assign tasks',
             'view tasks',
+            'fulfill tasks',
+            'update task status',
+            'view deleted tasks',
+            'restore tasks',
+            'force delete tasks'
         ]);
-
-        // reporter, assignee, manager
 
         $managerRole = Role::create(['name' => UserRoles::MANAGER]);
         $managerRole->givePermissionTo($chatPermissions
-            ->merge($taskPermissions)
+            ->merge($taskPermissions->filter(function ($permission) {
+                return !in_array($permission, ['view deleted tasks', 'restore tasks', 'force delete tasks']);
+            }))
             ->merge($userPermissions->filter(function ($permission) {
                 return in_array($permission, ['view users', 'update users']);
             }))
@@ -49,7 +52,7 @@ class MoreRolesSeeder extends Seeder
         $reporterRole = Role::create(['name' => UserRoles::REPORTER]);
         $reporterRole->givePermissionTo($chatPermissions
             ->merge($taskPermissions->filter(function ($permission) {
-                return in_array($permission, ['view tasks', 'create tasks', 'assign tasks']);
+                return in_array($permission, ['view tasks', 'create tasks', 'assign tasks', 'update task status']);
             }))
             ->merge($userPermissions->filter(function ($permission) {
                 return $permission === 'view users';
@@ -59,7 +62,7 @@ class MoreRolesSeeder extends Seeder
         $assigneeRole = Role::create(['name' => UserRoles::ASSIGNEE]);
         $assigneeRole->givePermissionTo($chatPermissions
             ->merge($taskPermissions->filter(function ($permission) {
-                return $permission === 'view tasks';
+                return in_array($permission, ['view tasks', 'fulfill tasks']);
             }))
             ->merge($userPermissions->filter(function ($permission) {
                 return $permission === 'view users';

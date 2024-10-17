@@ -6,6 +6,7 @@ use App\Enums\TaskStatus;
 use App\Events\TaskUpdated;
 use App\Models\Task;
 use App\Models\User;
+use App\Rules\TaskAttributePermission;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -150,26 +151,64 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task): RedirectResponse
     {
-        if (
-            ((!empty($request->input('title')) || !empty($request->input('description'))) && Gate::denies('update', $task))
-            || (!empty($request->input('status')) && Gate::denies('updateStatus', $task))
-            || (!empty($request->input('assignee_id')) && Gate::denies('updateAssignee', $task))
-            || (!empty($request->input('start_date')) || !empty($request->input('due_date')) && Gate::denies('manageDates', $task))
-        ) {
-            abort(403);
-        }
-
         $validated = $request->validate([
-            'status' => 'sometimes|required',
+            'status' => [
+                'sometimes',
+                'required',
+                new TaskAttributePermission($task),
+            ],
             'assignee_id' => [
                 'sometimes',
                 'nullable',
                 'exists:users,id',
+                function ($attribute, $value, $fail) use ($task) {
+                    if ($value !== $task->assignee_id && Gate::denies('updateAssignee', $task)) {
+                        $fail('You are not allowed to update the assignee of this task');
+                    }
+                }
             ],
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string|max:255',
-            'start_date' => 'sometimes|nullable|date',
-            'due_date' => 'sometimes|nullable|date',
+            'title' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($task) {
+                    if ($value !== $task->title && Gate::denies('update', $task)) {
+                        $fail('You are not allowed to update the title of this task');
+                    }
+                }
+            ],
+            'description' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($task) {
+                    if ($value !== $task->description && Gate::denies('update', $task)) {
+                        $fail('You are not allowed to update the description of this task');
+                    }
+                }
+            ],
+            'start_date' => [
+                'sometimes',
+                'nullable',
+                'date',
+                function ($attribute, $value, $fail) use ($task) {
+                    if ($value !== $task->start_date && Gate::denies('manageDates', $task)) {
+                        $fail('You are not allowed to update the start date of this task');
+                    }
+                }
+            ],
+            'due_date' => [
+                'sometimes',
+                'nullable',
+                'date',
+                function ($attribute, $value, $fail) use ($task) {
+                    if ($value !== $task->due_date && Gate::denies('manageDates', $task)) {
+                        $fail('You are not allowed to update the due date of this task');
+                    }
+                }
+            ],
         ]);
 
         $task->update($validated);

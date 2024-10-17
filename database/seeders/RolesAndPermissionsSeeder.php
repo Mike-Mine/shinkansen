@@ -17,10 +17,8 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $permissions = [
             'view users',
-            'create users',
             'update users',
             'delete users',
-            'edit tasks',
             'delete tasks',
             'create tasks',
             'assign tasks',
@@ -29,6 +27,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'create chat messages',
             'update chat messages',
             'delete chat messages',
+            'fulfill tasks',
+            'update task status',
+            'view deleted tasks',
+            'restore tasks',
+            'force delete tasks',
+            'manage comments'
         ];
 
         foreach ($permissions as $permission) {
