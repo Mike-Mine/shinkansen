@@ -32,7 +32,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'view deleted tasks',
             'restore tasks',
             'force delete tasks',
-            'manage comments'
+            'manage comments',
+            'change reporter'
         ];
 
         foreach ($permissions as $permission) {

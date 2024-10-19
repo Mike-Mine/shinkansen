@@ -8,7 +8,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputError from '@/Components/InputError.vue';
 
-import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
+import UserSelector from '@/Components/Tasks/UserSelector.vue';
 import StatusSelector from '@/Components/Tasks/StatusSelector.vue';
 import EditableTitle from '@/Components/Tasks/EditableTitle.vue';
 import EditableDescription from '@/Components/Tasks/EditableDescription.vue';
@@ -32,6 +32,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    reporters: {
+        type: Object,
+        required: true,
+    },
     defaultAssigneeName: {
         type: String,
         required: true,
@@ -47,6 +51,7 @@ const task = ref({ ...props.task });
 const form = useForm({
     status: task.value.status,
     assignee_id: task.value.assignee_id,
+    reporter_id: task.value.reporter_id,
     title: task.value.title,
     description: task.value.description,
     start_date: task.value.start_date,
@@ -133,11 +138,11 @@ onUnmounted(() => {
                             </div>
                             <div class="mb-4">
                                 <h3 class="text-sm font-medium text-gray-500 mb-1">Assignee</h3>
-                                <AssigneeSelector
+                                <UserSelector
                                     v-model="task.assignee_id"
-                                    :assignees="assignees"
+                                    :users="assignees"
                                     :viewOnly="!can.updateAssignee"
-                                    :defaultAssigneeName="defaultAssigneeName"
+                                    :defaultUserName="defaultAssigneeName"
                                     @update:modelValue="updateTask({ assignee_id: $event })"
                                 />
                             </div>
@@ -153,7 +158,13 @@ onUnmounted(() => {
                             </div>
                             <div class="mb-4">
                                 <h3 class="text-sm font-medium text-gray-500 mb-1">Reporter</h3>
-                                <p>{{ task.reporter.name }}{{ task.reporter.deleted_at ? ' (Unlicensed)' : '' }}</p>
+                                <UserSelector
+                                    v-model="task.reporter_id"
+                                    :users="reporters"
+                                    :viewOnly="!can.changeReporter"
+                                    defaultUserName="No reporter"
+                                    @update:modelValue="updateTask({ reporter_id: $event })"
+                                />
                             </div>
                             <div class="mt-6">
                                 <p class="text-xs text-gray-500">Created: {{ dayjs(task.created_at).format('DD/MMM/YYYY HH:mm') }}</p>

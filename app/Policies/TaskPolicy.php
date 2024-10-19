@@ -89,4 +89,9 @@ class TaskPolicy
     {
         return $task->reporter()->is($user) || $user->hasPermissionTo('update task dates');
     }
+
+    public function changeReporter(User $user, Task $task): bool
+    {
+        return $user->hasPermissionTo('change reporter');
+    }
 }

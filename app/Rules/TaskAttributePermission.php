@@ -26,13 +26,17 @@ class TaskAttributePermission implements ValidationRule
             'gate' => 'updateAssignee',
             'name' => 'assignee',
         ],
+        'reporter_id' => [
+            'gate' => 'changeReporter',
+            'name' => 'reporter',
+        ],
         'start_date' => [
             'gate' => 'manageDates',
-            'name' => 'start_date',
+            'name' => 'start date',
         ],
         'due_date' => [
             'gate' => 'manageDates',
-            'name' => 'due_date',
+            'name' => 'due date',
         ],
     ];
 

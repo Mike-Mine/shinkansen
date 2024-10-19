@@ -16,11 +16,11 @@ const model = defineModel({
 });
 
 const props = defineProps({
-    assignees: {
+    users: {
         type: Object,
         required: true,
     },
-    defaultAssigneeName: {
+    defaultUserName: {
         type: String,
         required: true,
     },
@@ -31,16 +31,16 @@ const props = defineProps({
 });
 
 const query = ref('');
-const filteredAssignees = computed(() =>
+const filteredUsers = computed(() =>
     query.value === ''
-        ? props.assignees
-        : props.assignees.filter((assignee) =>
+        ? props.users
+        : props.users.filter((assignee) =>
             assignee.name.toLowerCase().includes(query.value.toLowerCase())
         )
 );
 
 const selectedUser = computed(() =>
-    props.assignees.find(assignee => assignee.id === model.value) || { id: null, name: props.defaultAssigneeName }
+    props.users.find(assignee => assignee.id === model.value) || { id: null, name: props.defaultAssigneeName }
 );
 </script>
 
@@ -48,7 +48,7 @@ const selectedUser = computed(() =>
     <Combobox v-model="model">
         <div class="relative mt-1">
             <div
-                class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm"
+                class="relative z-30 w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm"
             >
                 <ComboboxInput
                     class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
@@ -63,14 +63,14 @@ const selectedUser = computed(() =>
             <TransitionRoot leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0"
                 @after-leave="query = ''">
                 <ComboboxOptions
-                    class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
-                    <div v-if="filteredAssignees.length === 0 && query !== ''"
+                    class="absolute z-40 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm">
+                    <div v-if="filteredUsers.length === 0 && query !== ''"
                         class="relative cursor-default select-none px-4 py-2 text-gray-700">
                         Nothing found.
                     </div>
 
                     <ComboboxOption
-                        v-for="assignee in filteredAssignees"
+                        v-for="assignee in filteredUsers"
                         :key="assignee.id"
                         :value="assignee.id"
                         v-slot="{ active, selected }"

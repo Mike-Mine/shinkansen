@@ -108,6 +108,9 @@ class TaskController extends Controller
             ->map(fn ($user) => ['id' => $user->id, 'name' => $user->name])
             ->prepend(['id' => 0, 'name' => User::DEFAULT_UNASSIGNED_NAME]);
 
+        $reporters = User::permission('create tasks')->get()
+            ->map(fn ($user) => ['id' => $user->id, 'name' => $user->name]);
+
         $task = $task->load([
             'reporter' => function ($query) {
                 $query->withTrashed()->select('id', 'name', 'deleted_at');
@@ -124,6 +127,13 @@ class TaskController extends Controller
             ]);
         }
 
+        if ($task->reporter?->deleted_at !== null) {
+            $reporters->push([
+                'id' => $task->reporter_id,
+                'name' => $task->reporter->name . ' (Unlicensed)',
+            ]);
+        }
+
         return Inertia::render('Tasks/Show', [
             'task' => $task,
             'comments' => $task->comments()
@@ -134,6 +144,7 @@ class TaskController extends Controller
                 )->paginate(10),
             'statuses' => TaskStatus::cases(),
             'assignees' => $assignees,
+            'reporters' => $reporters,
             'defaultAssigneeName' => User::DEFAULT_UNASSIGNED_NAME,
             'can' => [
                 'delete' => Gate::allows('delete', $task),
@@ -142,6 +153,7 @@ class TaskController extends Controller
                 'update' => Gate::allows('update', $task),
                 'manageComments' => auth()->user()->can('manage comments'),
                 'manageDates' => Gate::allows('manageDates', $task),
+                'changeReporter' => auth()->user()->can('change reporter'),
             ]
         ]);
     }
@@ -151,65 +163,52 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task): RedirectResponse
     {
-        $validated = $request->validate([
+        $taskAttributePermissionRule = new TaskAttributePermission($task);
+
+        $validationRules = [
             'status' => [
                 'sometimes',
                 'required',
-                new TaskAttributePermission($task),
             ],
             'assignee_id' => [
                 'sometimes',
                 'nullable',
                 'exists:users,id',
-                function ($attribute, $value, $fail) use ($task) {
-                    if ($value !== $task->assignee_id && Gate::denies('updateAssignee', $task)) {
-                        $fail('You are not allowed to update the assignee of this task');
-                    }
-                }
+            ],
+            'reporter_id' => [
+                'sometimes',
+                'nullable',
+                'exists:users,id',
             ],
             'title' => [
                 'sometimes',
                 'required',
                 'string',
                 'max:255',
-                function ($attribute, $value, $fail) use ($task) {
-                    if ($value !== $task->title && Gate::denies('update', $task)) {
-                        $fail('You are not allowed to update the title of this task');
-                    }
-                }
             ],
             'description' => [
                 'sometimes',
                 'required',
                 'string',
                 'max:255',
-                function ($attribute, $value, $fail) use ($task) {
-                    if ($value !== $task->description && Gate::denies('update', $task)) {
-                        $fail('You are not allowed to update the description of this task');
-                    }
-                }
             ],
             'start_date' => [
                 'sometimes',
                 'nullable',
                 'date',
-                function ($attribute, $value, $fail) use ($task) {
-                    if ($value !== $task->start_date && Gate::denies('manageDates', $task)) {
-                        $fail('You are not allowed to update the start date of this task');
-                    }
-                }
             ],
             'due_date' => [
                 'sometimes',
                 'nullable',
                 'date',
-                function ($attribute, $value, $fail) use ($task) {
-                    if ($value !== $task->due_date && Gate::denies('manageDates', $task)) {
-                        $fail('You are not allowed to update the due date of this task');
-                    }
-                }
             ],
-        ]);
+        ];
+
+        foreach ($validationRules as $key => $rule) {
+            $validationRules[$key][] = $taskAttributePermissionRule;
+        }
+
+        $validated = $request->validate($validationRules);
 
         $task->update($validated);
 

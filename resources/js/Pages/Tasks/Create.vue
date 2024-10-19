@@ -5,7 +5,7 @@ import { Link } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Components/InputError.vue';
 
-import AssigneeSelector from '@/Components/Tasks/AssigneeSelector.vue';
+import AssigneeSelector from '@/Components/Tasks/UserSelector.vue';
 import Container from '@/Components/Container.vue';
 import DateInput from '@/Components/DateInput.vue';
 
