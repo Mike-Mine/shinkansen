@@ -26,14 +26,17 @@ class PurgeDeletedTasks extends Command
      */
     public function handle()
     {
-        $tasksToDeleteCount = Task::withTrashed()->where('deleted_at', '<', now()->subDays(30))->count();
+        $tasksToDelete = Task::withTrashed()->where('deleted_at', '<', now()->subDays(30));
+        $tasksToDeleteCount = $tasksToDelete->count();
 
-        if ($tasksToDeleteCount === 0) {
-            $this->info('No tasks to delete');
-        } else {
-            $this->info("Deleting {$tasksToDeleteCount} tasks...");
-        }
+        $message = match ($tasksToDeleteCount) {
+            0 => 'No tasks to delete',
+            1 => 'Deleting 1 task...',
+            default => "Deleting {$tasksToDeleteCount} tasks...",
+        };
 
-        Task::withTrashed()->where('deleted_at', '<', now()->subDays(30))->forceDelete();
+        $this->info($message);
+
+        $tasksToDelete->forceDelete();
     }
 }
