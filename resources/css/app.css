@@ -1,0 +1,5 @@
+@import 'tasks/status.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
